@@ -63,6 +63,15 @@ npm run preview   # 预览 dist/（端口 4173）
 
 ## 发布
 
-`npm run build` 后 `dist/` 是纯静态产物，可部署到任意静态托管（GitHub Pages / Vercel / Netlify / 自建 nginx）。无环境变量、无服务端。
+`npm run build` 后 `dist/` 是纯静态产物，可部署到任意静态托管。无环境变量、无服务端。
 
-若部署到子路径（如 GitHub Pages 的 `/repo-name/`），需在 `vite.config.js` 加 `base: '/repo-name/'`。
+### GitHub Pages（当前方案，已配置）
+
+- 推送 `main` → `.github/workflows/deploy.yml` 自动构建并发布到 <https://luo896.github.io/life-in-weeks/>。
+- 子路径 base 由工作流里的 `npm run build -- --base=/life-in-weeks/` 注入，**本地开发/构建不受影响**。
+- 手动重新部署：GitHub 仓库 → Actions → Deploy to GitHub Pages → Run workflow。
+
+### 其他平台
+
+- **Cloudflare Pages**：Dashboard → Workers & Pages → 连接 GitHub 仓库，构建命令 `npm run build`、输出目录 `dist`（根路径部署，无需 base 参数）。支持私有仓库与自定义域名，中国大陆访问通常更稳定。
+- **Vercel / Netlify**：同上，检测到 Vite 会自动填好配置。

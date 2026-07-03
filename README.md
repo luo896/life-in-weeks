@@ -7,6 +7,8 @@
 
 **所有数据只保存在本机浏览器（localStorage），不上传任何服务器。**
 
+🌐 **在线使用**：<https://luo896.github.io/life-in-weeks/>（推送 `main` 分支自动部署）
+
 ## ✨ 功能总览
 
 | 模块 | 说明 |
