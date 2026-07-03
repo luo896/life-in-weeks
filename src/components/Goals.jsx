@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store.jsx'
+import { useI18n } from '../lib/i18n.jsx'
 import { Card, Field, Button, Empty } from './ui.jsx'
 import { GapBar } from './Visuals.jsx'
 import { METRICS } from '../lib/plan.js'
@@ -9,6 +10,7 @@ const BLANK = { metric: 'bedtime', current: '', target: '', unit: 'kg', targetDa
 
 export default function Goals() {
   const { state, addGoal, removeGoal } = useStore()
+  const { t } = useI18n()
   const b = state.baseline || {}
   const [form, setForm] = useState(BLANK)
 
@@ -58,8 +60,8 @@ export default function Goals() {
 
   return (
     <div className="stack">
-      <Card title="设定目标" subtitle="你希望变成什么样？给每个目标一个清晰的数字和期限。">
-        <Field label="目标类型">
+      <Card title={t('g.title')} subtitle={t('g.sub')}>
+        <Field label={t('g.type')}>
           <div className="seg">
             {Object.entries(METRICS).map(([k, v]) => (
               <button
@@ -68,7 +70,7 @@ export default function Goals() {
                 className={`seg-btn ${form.metric === k ? 'seg-on' : ''}`}
                 onClick={() => pickMetric(k)}
               >
-                {v.icon} {v.label}
+                {v.icon} {t(v.labelKey)}
               </button>
             ))}
           </div>
@@ -77,30 +79,30 @@ export default function Goals() {
         <div className="form-grid">
           {form.metric === 'habit' ? (
             <>
-              <Field label="想养成 / 改掉的习惯">
+              <Field label={t('g.habitLabel')}>
                 <input
                   type="text"
-                  placeholder="例如 戒掉睡前刷手机"
+                  placeholder={t('g.habitPh')}
                   value={form.target}
                   onChange={(e) => set({ target: e.target.value })}
                 />
               </Field>
-              <Field label="计划周期（周）">
+              <Field label={t('g.weeks')}>
                 <input type="number" min="1" value={form.weeks} onChange={(e) => set({ weeks: e.target.value })} />
               </Field>
             </>
           ) : m.kind === 'time' ? (
             <>
-              <Field label="现状">
+              <Field label={t('g.current')}>
                 <input type="time" value={form.current} onChange={(e) => set({ current: e.target.value })} />
               </Field>
-              <Field label="目标">
+              <Field label={t('g.target')}>
                 <input type="time" value={form.target} onChange={(e) => set({ target: e.target.value })} />
               </Field>
             </>
           ) : (
             <>
-              <Field label={`现状（${form.unit}）`}>
+              <Field label={t('g.currentU', { u: form.unit })}>
                 <input
                   type="number"
                   step="0.1"
@@ -108,7 +110,7 @@ export default function Goals() {
                   onChange={(e) => set({ current: e.target.value })}
                 />
               </Field>
-              <Field label={`目标（${form.unit}）`}>
+              <Field label={t('g.targetU', { u: form.unit })}>
                 <input
                   type="number"
                   step="0.1"
@@ -116,7 +118,7 @@ export default function Goals() {
                   onChange={(e) => set({ target: e.target.value })}
                 />
               </Field>
-              <Field label="每周节奏" hint="留空则用安全默认 0.5 kg/周">
+              <Field label={t('g.pace')} hint={t('g.paceHint')}>
                 <input
                   type="number"
                   step="0.1"
@@ -127,22 +129,22 @@ export default function Goals() {
               </Field>
             </>
           )}
-          <Field label="期望达成日期（可选）">
+          <Field label={t('g.date')}>
             <input type="date" value={form.targetDate} onChange={(e) => set({ targetDate: e.target.value })} />
           </Field>
         </div>
 
         <div className="actions">
           <Button onClick={add} disabled={!canAdd()}>
-            + 添加目标
+            {t('g.add')}
           </Button>
-          {!state.baseline && <span className="muted">提示：先填「现状基线」可自动带入当前值。</span>}
+          {!state.baseline && <span className="muted">{t('g.baselineTip')}</span>}
         </div>
       </Card>
 
-      <Card title={`我的目标（${state.goals.length}）`} subtitle="进度条显示「现状 → 最近打卡 → 目标」，一眼看出还差多少。">
+      <Card title={t('g.mine', { n: state.goals.length })} subtitle={t('g.mineSub')}>
         {state.goals.length === 0 ? (
-          <Empty icon="🎯">还没有目标。先添加一个，下一步就能生成改善计划。</Empty>
+          <Empty icon="🎯">{t('g.empty')}</Empty>
         ) : (
           <ul className="goal-list">
             {state.goals.map((g) => {
@@ -154,15 +156,15 @@ export default function Goals() {
                   <div className="goal-row">
                     <span className="goal-ic">{mm.icon}</span>
                     <div className="goal-main">
-                      <div className="goal-title">{mm.label}</div>
+                      <div className="goal-title">{mm.labelKey ? t(mm.labelKey) : g.metric}</div>
                       <div className="goal-detail">
                         {g.metric === 'habit'
-                          ? `${g.target} · ${g.weeks || 8} 周`
+                          ? `${g.target} · ${g.weeks || 8}w`
                           : `${g.current ?? '—'} → ${g.target ?? '—'} ${g.unit && g.metric === 'weight' ? g.unit : ''}`}
-                        {g.targetDate ? ` · 期望 ${g.targetDate}` : ''}
+                        {g.targetDate ? ` · ${t('g.expect', { d: g.targetDate })}` : ''}
                       </div>
                     </div>
-                    <button className="icon-btn" title="删除" onClick={() => removeGoal(g.id)}>
+                    <button className="icon-btn" title={t('common.delete')} onClick={() => removeGoal(g.id)}>
                       ✕
                     </button>
                   </div>
@@ -175,7 +177,7 @@ export default function Goals() {
                       unit={g.metric === 'weight' ? g.unit || 'kg' : ''}
                     />
                   )}
-                  {g.metric === 'habit' && <div className="goal-habit-chip">进行中 · {g.weeks || 8} 周养成计划</div>}
+                  {g.metric === 'habit' && <div className="goal-habit-chip">{t('g.habitChip', { w: g.weeks || 8 })}</div>}
                 </li>
               )
             })}

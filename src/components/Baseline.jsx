@@ -1,24 +1,13 @@
 import { useState } from 'react'
 import { useStore } from '../store.jsx'
+import { useI18n } from '../lib/i18n.jsx'
 import { Card, Field, Button, Stat } from './ui.jsx'
 import { SleepBar } from './Visuals.jsx'
 import { sleepHours, todayISO } from '../lib/date.js'
 
-const DIET_TAGS = [
-  '常吃夜宵',
-  '含糖饮料',
-  '不吃早餐',
-  '外卖为主',
-  '爱吃油炸',
-  '蔬菜不足',
-  '饮水偏少',
-  '咖啡因偏多',
-  '常喝酒',
-  '吃饭很快',
-]
-
 export default function Baseline() {
   const { state, setBaseline } = useStore()
+  const { t } = useI18n()
   const init = state.baseline || {}
   const [form, setForm] = useState({
     date: init.date || todayISO(),
@@ -34,12 +23,14 @@ export default function Baseline() {
   })
   const [saved, setSaved] = useState(false)
 
+  const DIET_TAGS = t('diet.tags')
+
   const set = (patch) => {
     setForm((f) => ({ ...f, ...patch }))
     setSaved(false)
   }
-  const toggleTag = (t) =>
-    set({ dietTags: form.dietTags.includes(t) ? form.dietTags.filter((x) => x !== t) : [...form.dietTags, t] })
+  const toggleTag = (tag) =>
+    set({ dietTags: form.dietTags.includes(tag) ? form.dietTags.filter((x) => x !== tag) : [...form.dietTags, tag] })
 
   const dur = sleepHours(form.bedtime, form.wakeTime)
   const unit = state.profile.weightUnit || 'kg'
@@ -52,101 +43,101 @@ export default function Baseline() {
   return (
     <div className="stack">
       {/* live visual snapshot of the current state */}
-      <Card title="现状一览" subtitle="下面的输入会实时画成你此刻的作息与状态。">
+      <Card title={t('b.overviewTitle')} subtitle={t('b.overviewSub')}>
         <div className="stat-row">
-          <Stat value={dur != null ? `${dur}h` : '—'} label="每晚睡眠" accent />
-          <Stat value={form.weightKg !== '' ? `${form.weightKg}` : '—'} label={`体重 (${unit})`} />
-          <Stat value={form.dietTags.length} label="需注意的饮食项" />
-          <Stat value={form.exercise ? '有' : '—'} label="运动习惯" />
+          <Stat value={dur != null ? `${dur}h` : '—'} label={t('b.sleepPerNight')} accent />
+          <Stat value={form.weightKg !== '' ? `${form.weightKg}` : '—'} label={t('b.weightLabel', { u: unit })} />
+          <Stat value={form.dietTags.length} label={t('b.dietFlags')} />
+          <Stat value={form.exercise ? t('b.yes') : '—'} label={t('b.exerciseHabit')} />
         </div>
-        <div className="viz-label">作息（睡眠时段）</div>
+        <div className="viz-label">{t('b.sleepViz')}</div>
         <SleepBar bedtime={form.bedtime} wakeTime={form.wakeTime} />
         {form.dietTags.length > 0 && (
           <div className="viz-tags">
-            {form.dietTags.map((t) => (
-              <span key={t} className="chip chip-on chip-static">
-                {t}
+            {form.dietTags.map((tag) => (
+              <span key={tag} className="chip chip-on chip-static">
+                {tag}
               </span>
             ))}
           </div>
         )}
       </Card>
 
-      <Card title="现状基线" subtitle="先诚实地记录现在的样子 —— 这是所有改变的起点。可随时更新。">
+      <Card title={t('b.title')} subtitle={t('b.sub')}>
         <div className="form-grid">
-          <Field label="记录日期">
+          <Field label={t('b.date')}>
             <input type="date" value={form.date} onChange={(e) => set({ date: e.target.value })} />
           </Field>
-          <Field label="通常入睡时间">
+          <Field label={t('b.bedtime')}>
             <input type="time" value={form.bedtime} onChange={(e) => set({ bedtime: e.target.value })} />
           </Field>
-          <Field label="通常起床时间" hint={dur != null ? `≈ 每晚睡 ${dur} 小时` : ''}>
+          <Field label={t('b.wake')} hint={dur != null ? t('b.sleepHint', { h: dur }) : ''}>
             <input type="time" value={form.wakeTime} onChange={(e) => set({ wakeTime: e.target.value })} />
           </Field>
-          <Field label={`当前体重（${unit}）`}>
+          <Field label={t('b.weight', { u: unit })}>
             <input
               type="number"
               step="0.1"
               inputMode="decimal"
-              placeholder="例如 72.5"
+              placeholder={t('b.weightPh')}
               value={form.weightKg}
               onChange={(e) => set({ weightKg: e.target.value })}
             />
           </Field>
-          <Field label="运动频率">
+          <Field label={t('b.exercise')}>
             <input
               type="text"
-              placeholder="例如 每周 1 次 / 几乎不运动"
+              placeholder={t('b.exercisePh')}
               value={form.exercise}
               onChange={(e) => set({ exercise: e.target.value })}
             />
           </Field>
-          <Field label="每日屏幕时间">
+          <Field label={t('b.screen')}>
             <input
               type="text"
-              placeholder="例如 睡前刷手机 1.5 小时"
+              placeholder={t('b.screenPh')}
               value={form.screenTime}
               onChange={(e) => set({ screenTime: e.target.value })}
             />
           </Field>
         </div>
 
-        <Field label="饮食习惯（点选符合你的标签）">
+        <Field label={t('b.dietTags')}>
           <div className="chips">
-            {DIET_TAGS.map((t) => (
+            {DIET_TAGS.map((tag) => (
               <button
-                key={t}
+                key={tag}
                 type="button"
-                className={`chip ${form.dietTags.includes(t) ? 'chip-on' : ''}`}
-                onClick={() => toggleTag(t)}
+                className={`chip ${form.dietTags.includes(tag) ? 'chip-on' : ''}`}
+                onClick={() => toggleTag(tag)}
               >
-                {t}
+                {tag}
               </button>
             ))}
           </div>
         </Field>
 
-        <Field label="饮食备注">
+        <Field label={t('b.dietNotes')}>
           <textarea
             rows={2}
-            placeholder="想多说几句你的饮食现状……"
+            placeholder={t('b.dietNotesPh')}
             value={form.dietNotes}
             onChange={(e) => set({ dietNotes: e.target.value })}
           />
         </Field>
 
-        <Field label="其他想记录的现状">
+        <Field label={t('b.other')}>
           <textarea
             rows={2}
-            placeholder="精力、情绪、压力、想改掉的其他习惯……"
+            placeholder={t('b.otherPh')}
             value={form.notes}
             onChange={(e) => set({ notes: e.target.value })}
           />
         </Field>
 
         <div className="actions">
-          <Button onClick={save}>{saved ? '已保存 ✓' : '保存基线'}</Button>
-          {state.baseline && <span className="muted">上次记录：{state.baseline.date}</span>}
+          <Button onClick={save}>{saved ? t('b.saved') : t('b.save')}</Button>
+          {state.baseline && <span className="muted">{t('b.last', { d: state.baseline.date })}</span>}
         </div>
       </Card>
     </div>

@@ -1,15 +1,19 @@
 // Turn a baseline + goals into a phased, week-by-week improvement plan.
+// Generated labels are produced with the ACTIVE language's t() and stored as-is;
+// regenerate the plan after switching language to refresh them.
 import { timeToMinutes, minutesToTime, clockDiff } from './date.js'
+import { makeT } from './i18n.jsx'
 
 export const METRICS = {
-  bedtime: { label: '入睡时间', kind: 'time', icon: '🌙' },
-  wakeTime: { label: '起床时间', kind: 'time', icon: '☀️' },
-  weight: { label: '体重', kind: 'number', icon: '⚖️', unit: 'kg' },
-  habit: { label: '习惯', kind: 'text', icon: '🎯' },
+  bedtime: { labelKey: 'm.bedtime', kind: 'time', icon: '🌙' },
+  wakeTime: { labelKey: 'm.wakeTime', kind: 'time', icon: '☀️' },
+  weight: { labelKey: 'm.weight', kind: 'number', icon: '⚖️', unit: 'kg' },
+  habit: { labelKey: 'm.habit', kind: 'text', icon: '🎯' },
 }
 
 // Generate milestones. Each: { id, metric, title, startOffset, durationWeeks, from, to, perWeek, steps:[{week,label}] }
 export function generatePlan(baseline, goals, opts = {}) {
+  const t = opts.t || makeT('zh')
   const bedStep = opts.bedStepMin ?? 15 // shift sleep schedule by 15 min / week
   const weightRate = opts.weightRate ?? 0.5 // safe ~0.5 kg / week
   const milestones = []
@@ -24,20 +28,20 @@ export function generatePlan(baseline, goals, opts = {}) {
       if (diff === 0) continue
       const weeks = Math.max(1, Math.ceil(Math.abs(diff) / bedStep))
       const perWeek = diff / weeks
-      const verb = g.metric === 'bedtime' ? '入睡' : '起床'
+      const verb = t(g.metric === 'bedtime' ? 'p.verbBed' : 'p.verbWake')
       const steps = []
       for (let w = 1; w <= weeks; w++) {
-        steps.push({ week: w, label: `第 ${w} 周：${verb} ${minutesToTime(fm + perWeek * w)}` })
+        steps.push({ week: w, label: t('p.weekStep', { w, verb, time: minutesToTime(fm + perWeek * w) }) })
       }
       milestones.push({
         id: g.id + '-m',
         metric: g.metric,
-        title: `${METRICS[g.metric].label} ${from} → ${to}`,
+        title: `${t(METRICS[g.metric].labelKey)} ${from} → ${to}`,
         startOffset: 0,
         durationWeeks: weeks,
         from,
         to,
-        perWeek: `每周提前/推后约 ${Math.round(Math.abs(perWeek))} 分钟`,
+        perWeek: t('p.perWeekMin', { m: Math.round(Math.abs(perWeek)) }),
         steps,
       })
     } else if (g.metric === 'weight') {
@@ -51,28 +55,28 @@ export function generatePlan(baseline, goals, opts = {}) {
       const perWeek = diff / weeks
       const steps = []
       for (let w = 1; w <= weeks; w++) {
-        steps.push({ week: w, label: `第 ${w} 周：目标约 ${(from + perWeek * w).toFixed(1)} ${unit}` })
+        steps.push({ week: w, label: t('p.weightStep', { w, v: (from + perWeek * w).toFixed(1), u: unit }) })
       }
       milestones.push({
         id: g.id + '-m',
         metric: 'weight',
-        title: `体重 ${from} → ${to} ${unit}`,
+        title: `${t('m.weight')} ${from} → ${to} ${unit}`,
         startOffset: 0,
         durationWeeks: weeks,
         from,
         to,
-        perWeek: `每周约 ${Math.abs(perWeek).toFixed(2)} ${unit}`,
+        perWeek: t('p.perWeekW', { v: Math.abs(perWeek).toFixed(2), u: unit }),
         steps,
       })
     } else {
       // generic habit replacement — research-based ~8 week formation arc
       const weeks = Number(g.weeks) || 8
-      const target = g.target || g.label || '新习惯'
+      const target = g.target || g.label || t('p.newHabit')
       const steps = [
-        { week: 1, label: '第 1–2 周：记录触发场景，看清旧习惯何时发生' },
-        { week: 3, label: '第 3–4 周：用新行为替换旧行为，布置环境提示' },
-        { week: 5, label: '第 5–6 周：连续打卡，给每个里程碑一点奖励' },
-        { week: 7, label: `第 7–${weeks} 周：让「${target}」变成不费力的自动行为` },
+        { week: 1, label: t('p.h1') },
+        { week: 3, label: t('p.h2') },
+        { week: 5, label: t('p.h3') },
+        { week: 7, label: t('p.h4', { w: weeks, t: target }) },
       ]
       milestones.push({
         id: g.id + '-m',
@@ -80,9 +84,9 @@ export function generatePlan(baseline, goals, opts = {}) {
         title: target,
         startOffset: 0,
         durationWeeks: weeks,
-        from: '现状',
+        from: t('p.habitFrom'),
         to: target,
-        perWeek: '行为养成通常需 21–66 天',
+        perWeek: t('p.habitPerWeek'),
         steps,
       })
     }

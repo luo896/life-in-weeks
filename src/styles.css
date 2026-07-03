@@ -848,6 +848,14 @@ input[type='time'] {
   background: var(--accent);
   box-shadow: 0 0 8px 1px rgba(52, 211, 153, 0.7);
 }
+.onboard-card {
+  position: relative;
+}
+.onboard-lang {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
 .onboard-card h1 {
   font-size: 28px;
   letter-spacing: 0.04em;

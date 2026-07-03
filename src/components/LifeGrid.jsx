@@ -2,6 +2,7 @@ import { useMemo, useState, useRef, useLayoutEffect, useEffect } from 'react'
 import { useStore } from '../store.jsx'
 import { lifeStats, weekStartDate, weekIndexForDate, monthLabel } from '../lib/date.js'
 import { METRICS } from '../lib/plan.js'
+import { useI18n } from '../lib/i18n.jsx'
 import { Button } from './ui.jsx'
 
 const COLS = 52
@@ -45,6 +46,7 @@ function useFitGrid(cols, rows) {
 
 export function LifeGridView() {
   const { state, upsertJournal, removeJournal, setProfile } = useStore()
+  const { t, lang } = useI18n()
   const { profile, plan, goals, journals } = state
   const years = profile.lifeExpectancyYears || 90
   // explicit user choice wins; otherwise pick by screen shape (wide → landscape),
@@ -119,7 +121,7 @@ export function LifeGridView() {
   }, [stats.totalWeeks, stats.lived, stats.currentWeekIndex, bands, journalByWeek, selectedWeek])
 
   if (!stats.ok) {
-    return <div className="card">请先在右上角「设置」里填写出生日期。</div>
+    return <div className="card">{t('grid.setBirthFirst')}</div>
   }
 
   const pickWeek = (i) => {
@@ -153,36 +155,38 @@ export function LifeGridView() {
         <div className="grid-head">
           <div className="grid-head-row">
             <div className="gstats">
-              已度过 <b>{stats.lived.toLocaleString()}</b> 周 ·{' '}
-              <span className="accent">
-                剩余 <b>{stats.remaining.toLocaleString()}</b> 周
-              </span>{' '}
-              · 走过 <b>{stats.pct.toFixed(1)}%</b> · {stats.ageYears} 岁
+              {t('grid.stats', {
+                lived: stats.lived.toLocaleString(),
+                remaining: stats.remaining.toLocaleString(),
+                pct: stats.pct.toFixed(1),
+                age: stats.ageYears,
+              })}
             </div>
-            <div className="orient-toggle" title="切换周历方向">
+            <div className="orient-toggle" title={t('grid.orientTitle')}>
               <button
                 className={`ot-btn ${orientation === 'portrait' ? 'on' : ''}`}
                 onClick={() => setProfile({ gridOrientation: 'portrait' })}
               >
-                ▯ 竖放
+                {t('grid.portrait')}
               </button>
               <button
                 className={`ot-btn ${orientation === 'landscape' ? 'on' : ''}`}
                 onClick={() => setProfile({ gridOrientation: 'landscape' })}
               >
-                ▭ 横放
+                {t('grid.landscape')}
               </button>
             </div>
           </div>
           <div className="grid-caption">
             {hover != null ? (
               <span>
-                第 <b>{hover + 1}</b> 周 · {monthLabel(hoverDate)} · {Math.floor(hover / COLS)} 岁
-                {hover === stats.currentWeekIndex ? ' · 本周' : hover < stats.lived ? ' · 已度过' : ' · 未来'}
-                {journalByWeek.has(hover) ? ' · 有周记 📝' : ''}
+                {t('grid.week', { n: hover + 1 })} · {monthLabel(hoverDate, lang)} ·{' '}
+                {t('grid.age', { n: Math.floor(hover / COLS) })} ·{' '}
+                {hover === stats.currentWeekIndex ? t('grid.now') : hover < stats.lived ? t('grid.past') : t('grid.future')}
+                {journalByWeek.has(hover) ? ` · ${t('grid.hasJournal')}` : ''}
               </span>
             ) : (
-              <span className="muted">点任意方块写下那一周的周记 · 鼠标悬停查看是哪一周</span>
+              <span className="muted">{t('grid.hoverHint')}</span>
             )}
           </div>
         </div>
@@ -203,24 +207,24 @@ export function LifeGridView() {
 
         <div className="grid-foot">
           <div className="legend">
-            <span><i className="sw wk-past" /> 已度过</span>
-            <span><i className="sw wk-now" /> 本周</span>
-            <span><i className="sw wk-future" /> 未来</span>
-            <span><i className="sw wk-j-legend" /> 有周记</span>
+            <span><i className="sw wk-past" /> {t('grid.past')}</span>
+            <span><i className="sw wk-now" /> {t('grid.now')}</span>
+            <span><i className="sw wk-future" /> {t('grid.future')}</span>
+            <span><i className="sw wk-j-legend" /> {t('grid.legendJournal')}</span>
             {bands.map((b, i) => (
               <span key={i}><i className="sw" style={{ background: b.color }} /> {b.title}</span>
             ))}
           </div>
-          <div className="scroll-hint">↓ 下滑查看目标时间线与周记</div>
+          <div className="scroll-hint">{t('grid.scrollHint')}</div>
         </div>
       </section>
 
       {/* ---- below the fold: goal timeline ---- */}
       <section className="card">
-        <h2 className="card-title">🎯 目标时间线</h2>
-        <p className="card-sub">你的目标按时间排布。给目标设个「期望日期」就会落到对应的周。</p>
+        <h2 className="card-title">{t('tl.title')}</h2>
+        <p className="card-sub">{t('tl.sub')}</p>
         {goalNodes.length === 0 ? (
-          <p className="muted">还没有目标。去「目标」页添加，它们会出现在这条时间线上。</p>
+          <p className="muted">{t('tl.empty')}</p>
         ) : (
           <ol className="timeline">
             {goalNodes.map((g) => {
@@ -231,16 +235,18 @@ export function LifeGridView() {
                   <span className="tl-dot" />
                   <div className="tl-body">
                     <div className="tl-when">
-                      {g.targetDate || '未设期限'}
+                      {g.targetDate || t('tl.noDate')}
                       {weeksAway != null && (
-                        <span className="tl-away">{weeksAway > 0 ? `还有 ${weeksAway} 周` : '已到期'}</span>
+                        <span className="tl-away">
+                          {weeksAway > 0 ? t('tl.weeksAway', { n: weeksAway }) : t('tl.due')}
+                        </span>
                       )}
                     </div>
                     <div className="tl-what">
                       <span className="tl-ic">{mm.icon}</span>
                       {g.metric === 'habit'
                         ? g.target
-                        : `${mm.label} ${g.current ?? '—'} → ${g.target ?? '—'} ${g.metric === 'weight' ? g.unit || 'kg' : ''}`}
+                        : `${t(mm.labelKey)} ${g.current ?? '—'} → ${g.target ?? '—'} ${g.metric === 'weight' ? g.unit || 'kg' : ''}`}
                     </div>
                   </div>
                 </li>
@@ -252,32 +258,32 @@ export function LifeGridView() {
 
       {/* ---- below the fold: weekly journal ---- */}
       <section className="card" ref={composerRef}>
-        <h2 className="card-title">📝 周记</h2>
-        <p className="card-sub">每周写一句话，记录这一周的状态与心情。它会标记在上面的周历里。</p>
+        <h2 className="card-title">{t('j.title')}</h2>
+        <p className="card-sub">{t('j.sub')}</p>
 
         <div className="composer">
           <div className="composer-head">
             <span>
-              第 <b>{selectedWeek + 1}</b> 周 · {monthLabel(selDate)}
-              {selectedWeek === stats.currentWeekIndex && <span className="composer-now">本周</span>}
+              <b>{t('grid.week', { n: selectedWeek + 1 })}</b> · {monthLabel(selDate, lang)}
+              {selectedWeek === stats.currentWeekIndex && <span className="composer-now">{t('j.thisWeek')}</span>}
             </span>
             {selectedWeek !== stats.currentWeekIndex && (
               <button className="link-btn" onClick={() => setSelectedWeek(stats.currentWeekIndex)}>
-                跳到本周
+                {t('j.jumpNow')}
               </button>
             )}
           </div>
           <textarea
             rows={3}
-            placeholder="这一周过得怎么样？睡得好吗？有没有坚持计划？"
+            placeholder={t('j.ph')}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
           />
           <div className="actions">
             <Button onClick={() => upsertJournal(selectedWeek, draft)} disabled={!draft.trim()}>
-              保存周记
+              {t('j.save')}
             </Button>
-            <span className="muted">想写哪一周？回到上面点对应的方块即可。</span>
+            <span className="muted">{t('j.pickHint')}</span>
           </div>
         </div>
 
@@ -287,12 +293,12 @@ export function LifeGridView() {
               const d = weekStartDate(profile.birthdate, j.weekIndex)
               return (
                 <li className="journal-item" key={j.id}>
-                  <button className="journal-when" onClick={() => pickWeek(j.weekIndex)} title="点击编辑这一周">
-                    第 {j.weekIndex + 1} 周
-                    <em>{monthLabel(d)}</em>
+                  <button className="journal-when" onClick={() => pickWeek(j.weekIndex)} title={t('j.editTitle')}>
+                    {t('grid.week', { n: j.weekIndex + 1 })}
+                    <em>{monthLabel(d, lang)}</em>
                   </button>
                   <p className="journal-text">{j.text}</p>
-                  <button className="icon-btn" title="删除" onClick={() => removeJournal(j.id)}>
+                  <button className="icon-btn" title={t('common.delete')} onClick={() => removeJournal(j.id)}>
                     ✕
                   </button>
                 </li>

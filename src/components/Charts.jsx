@@ -1,9 +1,11 @@
 // Dependency-free responsive SVG line chart with an optional goal line.
 import { Empty } from './ui.jsx'
+import { useI18n } from '../lib/i18n.jsx'
 
 export function LineChart({ data, goal, color = '#34d399', unit = '', height = 200, invertHint }) {
+  const { t } = useI18n()
   if (!data || data.length === 0) {
-    return <Empty icon="📈">还没有数据，去「打卡」记录几天就会出现趋势。</Empty>
+    return <Empty icon="📈">{t('charts.empty')}</Empty>
   }
 
   const W = 600
@@ -56,8 +58,7 @@ export function LineChart({ data, goal, color = '#34d399', unit = '', height = 2
           <g>
             <line x1={pad.l} y1={y(Number(goal))} x2={W - pad.r} y2={y(Number(goal))} className="chart-goal" />
             <text x={W - pad.r} y={y(Number(goal)) - 5} className="chart-goal-label" textAnchor="end">
-              目标 {goal}
-              {unit}
+              {t('charts.goal', { v: goal, u: unit })}
             </text>
           </g>
         )}

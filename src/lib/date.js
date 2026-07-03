@@ -94,8 +94,9 @@ export function weekIndexForDate(birthdate, dateStr) {
   return Math.floor((d.getTime() - birth.getTime()) / WEEK_MS)
 }
 
-// Short human label for a date, e.g. "2026年6月".
-export function monthLabel(d) {
+// Short human label for a date, e.g. "2026年6月" / "Jun 2026".
+export function monthLabel(d, lang = 'zh') {
   if (!d) return ''
+  if (lang === 'en') return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
   return `${d.getFullYear()}年${d.getMonth() + 1}月`
 }

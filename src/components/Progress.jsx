@@ -1,10 +1,12 @@
 import { useStore } from '../store.jsx'
+import { useI18n } from '../lib/i18n.jsx'
 import { Card, Stat, Empty } from './ui.jsx'
 import { LineChart } from './Charts.jsx'
 import { weightSeries, sleepDurationSeries, bedtimeSeries, computeStreak, adherenceRate, seriesDelta } from '../lib/stats.js'
 
 export default function Progress() {
   const { state } = useStore()
+  const { t } = useI18n()
   const { logs, goals } = state
 
   const wSeries = weightSeries(logs)
@@ -28,44 +30,39 @@ export default function Progress() {
 
   if (logs.length === 0) {
     return (
-      <Card title="进度">
-        <Empty icon="🌱">还没有打卡数据。去「打卡」记录几天，趋势图与统计就会出现在这里。</Empty>
+      <Card title={t('nav.progress')}>
+        <Empty icon="🌱">{t('pr.empty')}</Empty>
       </Card>
     )
   }
 
   return (
     <div className="stack">
-      <Card title="概览">
+      <Card title={t('pr.overview')}>
         <div className="stat-row">
-          <Stat value={`${logs.length}`} label="打卡天数" />
-          <Stat value={`${streak}`} label="连续天数" accent />
-          <Stat value={wDelta != null ? `${wDelta > 0 ? '+' : ''}${wDelta}` : '—'} label="体重变化" />
-          <Stat value={adh != null ? `${adh}%` : '—'} label="计划坚持率" />
+          <Stat value={`${logs.length}`} label={t('pr.days')} />
+          <Stat value={`${streak}`} label={t('pr.streak')} accent />
+          <Stat value={wDelta != null ? `${wDelta > 0 ? '+' : ''}${wDelta}` : '—'} label={t('pr.wDelta')} />
+          <Stat value={adh != null ? `${adh}%` : '—'} label={t('pr.adherence')} />
         </div>
       </Card>
 
-      <Card title="体重趋势" subtitle={weightGoal ? `目标 ${weightGoal.target} ${weightGoal.unit || 'kg'}` : '记录体重以查看趋势'}>
+      <Card
+        title={t('pr.wTitle')}
+        subtitle={weightGoal ? t('pr.wGoal', { t: weightGoal.target, u: weightGoal.unit || 'kg' }) : t('pr.wSub')}
+      >
         <LineChart data={wSeries} goal={weightGoal?.target} unit={weightGoal?.unit || 'kg'} color="#34d399" />
       </Card>
 
-      <Card title="睡眠时长趋势" subtitle="每晚实际睡眠小时数">
+      <Card title={t('pr.sTitle')} subtitle={t('pr.sSub')}>
         <LineChart data={sSeries} goal={8} unit="h" color="#60a5fa" />
       </Card>
 
-      <Card title="入睡时间趋势" subtitle={bedGoal ? `目标 ${bedGoal.target}` : '越低越早睡（如 25 表示次日 01:00）'}>
-        <LineChart
-          data={bSeries}
-          goal={bedGoalHours}
-          unit="h"
-          color="#f59e0b"
-          invertHint="数值 = 入睡的小时（24 = 午夜，23 = 晚 11 点）；越低越早睡。"
-        />
+      <Card title={t('pr.bTitle')} subtitle={bedGoal ? t('pr.bGoal', { t: bedGoal.target }) : t('pr.bSub')}>
+        <LineChart data={bSeries} goal={bedGoalHours} unit="h" color="#f59e0b" invertHint={t('pr.hint')} />
       </Card>
 
-      {sLatest && (
-        <p className="muted center">最近一次睡眠 {sLatest.y} 小时 · 继续保持，每一格周历都在见证你的改变。</p>
-      )}
+      {sLatest && <p className="muted center">{t('pr.latest', { h: sLatest.y })}</p>}
     </div>
   )
 }

@@ -4,7 +4,8 @@ const KEY = 'life-weeks-habit:v1'
 
 export const DEFAULT_STATE = {
   // gridOrientation: '' = auto (landscape on wide screens, portrait on narrow); 'portrait' | 'landscape' once chosen
-  profile: { name: '', birthdate: '', lifeExpectancyYears: 90, weightUnit: 'kg', gridOrientation: '' },
+  // lang: '' = auto (follow system); 'zh' | 'en' once chosen
+  profile: { name: '', birthdate: '', lifeExpectancyYears: 90, weightUnit: 'kg', gridOrientation: '', lang: '' },
   baseline: null, // { date, bedtime, wakeTime, weightKg, dietTags:[], dietNotes, exercise, screenTime, mood, notes }
   goals: [], // { id, metric, current, target, unit, targetDate, pace, weeks }
   plan: { milestones: [], generatedAt: null },

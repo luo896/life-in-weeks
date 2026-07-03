@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useStore } from './store.jsx'
 import { lifeStats } from './lib/date.js'
+import { useI18n, LANGS } from './lib/i18n.jsx'
 import { Button, Field } from './components/ui.jsx'
 import Onboarding from './components/Onboarding.jsx'
 import { LifeGridView } from './components/LifeGrid.jsx'
@@ -12,19 +13,26 @@ import Progress from './components/Progress.jsx'
 import Share from './components/Share.jsx'
 
 const NAV = [
-  { key: 'grid', icon: '🗓️', label: '人生周历' },
-  { key: 'baseline', icon: '📍', label: '现状基线' },
-  { key: 'goals', icon: '🎯', label: '目标' },
-  { key: 'plan', icon: '🧭', label: '改善计划' },
-  { key: 'log', icon: '✅', label: '打卡' },
-  { key: 'progress', icon: '📈', label: '进度' },
-  { key: 'share', icon: '🔗', label: '分享' },
+  { key: 'grid', icon: '🗓️', labelKey: 'nav.grid' },
+  { key: 'baseline', icon: '📍', labelKey: 'nav.baseline' },
+  { key: 'goals', icon: '🎯', labelKey: 'nav.goals' },
+  { key: 'plan', icon: '🧭', labelKey: 'nav.plan' },
+  { key: 'log', icon: '✅', labelKey: 'nav.log' },
+  { key: 'progress', icon: '📈', labelKey: 'nav.progress' },
+  { key: 'share', icon: '🔗', labelKey: 'nav.share' },
 ]
 
 export default function App() {
   const { state } = useStore()
+  const { t, lang } = useI18n()
   const [view, setView] = useState('grid')
   const [settingsOpen, setSettingsOpen] = useState(false)
+
+  // keep the tab title & html lang in sync with the active language
+  useEffect(() => {
+    document.title = t('app.title')
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en'
+  }, [t, lang])
 
   if (!state.profile.birthdate) return <Onboarding />
 
@@ -35,7 +43,7 @@ export default function App() {
       <aside className="sidebar">
         <div className="brand">
           <span className="brand-mark">◳</span>
-          <span className="brand-text">人生周历</span>
+          <span className="brand-text">{t('app.brand')}</span>
         </div>
         <nav className="nav">
           {NAV.map((n) => (
@@ -45,32 +53,32 @@ export default function App() {
               onClick={() => setView(n.key)}
             >
               <span className="nav-ic">{n.icon}</span>
-              <span className="nav-label">{n.label}</span>
+              <span className="nav-label">{t(n.labelKey)}</span>
             </button>
           ))}
         </nav>
         <div className="side-foot">
           <button className="nav-item" onClick={() => setSettingsOpen(true)}>
             <span className="nav-ic">⚙️</span>
-            <span className="nav-label">设置</span>
+            <span className="nav-label">{t('nav.settings')}</span>
           </button>
         </div>
       </aside>
 
       <div className="main">
         <header className="topbar">
-          <div className="topbar-title">{NAV.find((n) => n.key === view)?.label}</div>
+          <div className="topbar-title">{t(NAV.find((n) => n.key === view)?.labelKey)}</div>
           <div className="topbar-right">
             <div className="mini-stat">
-              <span className="mini-num">{stats.remaining.toLocaleString()}</span> 周剩余
+              <span className="mini-num">{stats.remaining.toLocaleString()}</span> {t('topbar.weeksLeft')}
             </div>
-            <div className="mini-bar" title={`生命已走过 ${stats.pct.toFixed(1)}%`}>
+            <div className="mini-bar" title={t('topbar.lifeUsed', { p: stats.pct.toFixed(1) })}>
               <div style={{ width: `${stats.pct}%` }} />
             </div>
           </div>
         </header>
 
-        <main className={`content ${view === 'grid' && state.profile.gridOrientation === 'landscape' ? 'content-wide' : ''}`}>
+        <main className={`content ${view === 'grid' ? 'content-wide' : ''}`}>
           {view === 'grid' && <LifeGridView />}
           {view === 'baseline' && <Baseline />}
           {view === 'goals' && <Goals />}
@@ -88,7 +96,7 @@ export default function App() {
               onClick={() => setView(n.key)}
             >
               <span className="tab-ic">{n.icon}</span>
-              <span className="tab-label">{n.label}</span>
+              <span className="tab-label">{t(n.labelKey)}</span>
             </button>
           ))}
         </nav>
@@ -101,12 +109,14 @@ export default function App() {
 
 function Settings({ onClose }) {
   const { state, setProfile } = useStore()
+  const { t } = useI18n()
   const p = state.profile
   const [form, setForm] = useState({
     name: p.name || '',
     birthdate: p.birthdate || '',
     lifeExpectancyYears: p.lifeExpectancyYears || 90,
     weightUnit: p.weightUnit || 'kg',
+    lang: p.lang || '',
   })
   const set = (patch) => setForm((f) => ({ ...f, ...patch }))
   const save = () => {
@@ -118,18 +128,18 @@ function Settings({ onClose }) {
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <header className="modal-head">
-          <h2>设置</h2>
+          <h2>{t('settings.title')}</h2>
           <button className="icon-btn" onClick={onClose}>
             ✕
           </button>
         </header>
-        <Field label="名字">
+        <Field label={t('settings.name')}>
           <input type="text" value={form.name} onChange={(e) => set({ name: e.target.value })} />
         </Field>
-        <Field label="出生日期">
+        <Field label={t('settings.birthdate')}>
           <input type="date" value={form.birthdate} onChange={(e) => set({ birthdate: e.target.value })} />
         </Field>
-        <Field label="预期寿命（岁）">
+        <Field label={t('settings.lifeExpectancy')}>
           <input
             type="number"
             min="40"
@@ -138,16 +148,25 @@ function Settings({ onClose }) {
             onChange={(e) => set({ lifeExpectancyYears: e.target.value })}
           />
         </Field>
-        <Field label="体重单位">
+        <Field label={t('settings.weightUnit')}>
           <select value={form.weightUnit} onChange={(e) => set({ weightUnit: e.target.value })}>
             <option value="kg">kg</option>
             <option value="lb">lb</option>
           </select>
         </Field>
+        <Field label={t('settings.language')}>
+          <select value={form.lang} onChange={(e) => set({ lang: e.target.value })}>
+            {LANGS.map((l) => (
+              <option key={l.value} value={l.value}>
+                {l.labelKey ? t(l.labelKey) : l.label}
+              </option>
+            ))}
+          </select>
+        </Field>
         <div className="actions">
-          <Button onClick={save}>保存</Button>
+          <Button onClick={save}>{t('settings.save')}</Button>
           <Button variant="ghost" onClick={onClose}>
-            取消
+            {t('settings.cancel')}
           </Button>
         </div>
       </div>

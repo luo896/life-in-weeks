@@ -44,7 +44,17 @@ npm run preview   # 预览 dist/（端口 4173）
 
 ### 计划节奏参数
 
-`lib/plan.js` `generatePlan(baseline, goals, opts)`：`opts.bedStepMin`（默认 15 分钟/周）、`opts.weightRate`（默认 0.5kg/周）。
+`lib/plan.js` `generatePlan(baseline, goals, opts)`：`opts.bedStepMin`（默认 15 分钟/周）、`opts.weightRate`（默认 0.5kg/周）、`opts.t`（i18n 翻译函数，生成文案的语言）。
+
+### 多语言（i18n）
+
+- 词典与工具都在 `src/lib/i18n.jsx`：`DICT.zh` / `DICT.en` 平铺键值（支持 `{var}` 插值；条目可为返回 JSX 的函数）。
+- 组件内 `const { t, lang } = useI18n()`；语言偏好存 `profile.lang`（`''` = 跟随系统）。
+- 非 React 模块（`plan.js` / `share.js`）用 `makeT(resolveLang(...))` 取得 `t`。
+- **加新文案**：在 zh 和 en 两个词典里同时加同名键，缺失键会回退 zh 再回退键名。
+- **加新语言**：在 `DICT` 增加语言对象 + `LANGS` 增加选项 + `resolveLang` 增加匹配。
+- 校验无遗漏：`grep -rn '[一-鿿]' src --include='*.jsx' --include='*.js' | grep -v i18n.jsx` 应只剩 `date.js` 的中文日期格式与引导页「中文」按钮。
+- 注意：计划文案在生成时按当前语言**写入存储**，切语言后需「重新生成」；历史打卡勾选项与饮食标签保留录入时语言。
 
 ## 测试
 

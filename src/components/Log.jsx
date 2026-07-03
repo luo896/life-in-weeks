@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useStore } from '../store.jsx'
+import { useI18n } from '../lib/i18n.jsx'
 import { Card, Field, Button, Empty } from './ui.jsx'
 import { todayISO, sleepHours } from '../lib/date.js'
 import { computeStreak } from '../lib/stats.js'
@@ -8,12 +9,13 @@ const MOODS = ['😣', '🙁', '😐', '🙂', '😄']
 
 export default function Log() {
   const { state, addLog, removeLog } = useStore()
+  const { t } = useI18n()
 
   // Checklist items derive from the plan; fall back to sensible defaults.
   const checklist = useMemo(() => {
     const fromPlan = (state.plan.milestones || []).map((m) => m.title)
-    return fromPlan.length ? fromPlan : ['按计划作息', '健康饮食', '今日运动']
-  }, [state.plan])
+    return fromPlan.length ? fromPlan : [t('l.def1'), t('l.def2'), t('l.def3')]
+  }, [state.plan, t])
 
   const todays = state.logs.find((l) => l.date === todayISO())
   const [form, setForm] = useState(() => ({
@@ -60,21 +62,21 @@ export default function Log() {
   return (
     <div className="stack">
       <Card
-        title="今日打卡"
-        subtitle="每天花一分钟，记录真实发生的事。坚持本身就是改变。"
-        right={streak > 0 ? <div className="streak">🔥 {streak} 天连续</div> : null}
+        title={t('l.title')}
+        subtitle={t('l.sub')}
+        right={streak > 0 ? <div className="streak">{t('l.streak', { n: streak })}</div> : null}
       >
         <div className="form-grid">
-          <Field label="日期">
+          <Field label={t('l.date')}>
             <input type="date" value={form.date} max={todayISO()} onChange={(e) => loadDate(e.target.value)} />
           </Field>
-          <Field label="实际入睡">
+          <Field label={t('l.bed')}>
             <input type="time" value={form.bedtime} onChange={(e) => set({ bedtime: e.target.value })} />
           </Field>
-          <Field label="实际起床" hint={dur != null ? `睡了 ${dur} 小时` : ''}>
+          <Field label={t('l.wake')} hint={dur != null ? t('l.slept', { h: dur }) : ''}>
             <input type="time" value={form.wakeTime} onChange={(e) => set({ wakeTime: e.target.value })} />
           </Field>
-          <Field label={`体重（${state.profile.weightUnit || 'kg'}）`}>
+          <Field label={t('l.weight', { u: state.profile.weightUnit || 'kg' })}>
             <input
               type="number"
               step="0.1"
@@ -85,7 +87,7 @@ export default function Log() {
           </Field>
         </div>
 
-        <Field label="今天完成了哪些？">
+        <Field label={t('l.doneQ')}>
           <div className="checks">
             {checklist.map((item) => (
               <button
@@ -100,7 +102,7 @@ export default function Log() {
           </div>
         </Field>
 
-        <Field label="今日心情">
+        <Field label={t('l.mood')}>
           <div className="moods">
             {MOODS.map((m) => (
               <button
@@ -115,23 +117,23 @@ export default function Log() {
           </div>
         </Field>
 
-        <Field label="备注">
+        <Field label={t('l.note')}>
           <textarea
             rows={2}
-            placeholder="今天的感受、困难或小胜利……"
+            placeholder={t('l.notePh')}
             value={form.note}
             onChange={(e) => set({ note: e.target.value })}
           />
         </Field>
 
         <div className="actions">
-          <Button onClick={save}>{justSaved ? '已保存 ✓' : '保存今日记录'}</Button>
+          <Button onClick={save}>{justSaved ? t('l.saved') : t('l.save')}</Button>
         </div>
       </Card>
 
-      <Card title="最近记录">
+      <Card title={t('l.recent')}>
         {recent.length === 0 ? (
-          <Empty icon="📅">还没有记录。完成上面的打卡，这里会出现你的足迹。</Empty>
+          <Empty icon="📅">{t('l.empty')}</Empty>
         ) : (
           <ul className="log-list">
             {recent.map((l) => {
@@ -139,7 +141,7 @@ export default function Log() {
               const done = l.adherence ? Object.values(l.adherence).filter(Boolean).length : 0
               return (
                 <li key={l.id} className="log-item">
-                  <button className="log-date" onClick={() => loadDate(l.date)} title="点击载入编辑">
+                  <button className="log-date" onClick={() => loadDate(l.date)} title={t('l.editTitle')}>
                     {l.date}
                   </button>
                   <span className="log-mood">{l.mood}</span>
@@ -149,7 +151,7 @@ export default function Log() {
                     {done > 0 && <em>✅ {done}</em>}
                   </span>
                   <span className="log-note">{l.note}</span>
-                  <button className="icon-btn" title="删除" onClick={() => removeLog(l.id)}>
+                  <button className="icon-btn" title={t('common.delete')} onClick={() => removeLog(l.id)}>
                     ✕
                   </button>
                 </li>

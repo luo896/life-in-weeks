@@ -1,8 +1,10 @@
 // Visual representations of the baseline and goal status.
+import { useI18n } from '../lib/i18n.jsx'
 import { timeToMinutes, sleepHours, clockDiff } from '../lib/date.js'
 
 // A 24-hour bar with the sleep window highlighted (handles crossing midnight).
 export function SleepBar({ bedtime, wakeTime }) {
+  const { t } = useI18n()
   const b = timeToMinutes(bedtime)
   const w = timeToMinutes(wakeTime)
   const dur = sleepHours(bedtime, wakeTime)
@@ -19,30 +21,31 @@ export function SleepBar({ bedtime, wakeTime }) {
   return (
     <div className="sleepbar">
       <div className="sleepbar-track">
-        {ticks.map((t) => (
-          <span key={t} className="sleepbar-tick" style={{ left: `${(t / 24) * 100}%` }} />
+        {ticks.map((tk) => (
+          <span key={tk} className="sleepbar-tick" style={{ left: `${(tk / 24) * 100}%` }} />
         ))}
         {segs.map(([s, e], i) => (
           <div key={i} className="sleepbar-fill" style={{ left: `${pct(s)}%`, width: `${pct(e - s)}%` }} />
         ))}
       </div>
       <div className="sleepbar-axis">
-        <span>午夜</span>
-        <span>6:00</span>
-        <span>正午</span>
-        <span>18:00</span>
-        <span>午夜</span>
+        <span>{t('v.axis0')}</span>
+        <span>{t('v.axis6')}</span>
+        <span>{t('v.axis12')}</span>
+        <span>{t('v.axis18')}</span>
+        <span>{t('v.axis0')}</span>
       </div>
       <div className="sleepbar-cap">
         🌙 {bedtime || '—'} → ☀️ {wakeTime || '—'}
-        {dur != null && <b> · 约 {dur} 小时</b>}
+        {dur != null && <b> · {t('v.approxHours', { h: dur })}</b>}
       </div>
     </div>
   )
 }
 
-// A track from "现状" to "目标" with a marker at the latest actual value.
+// A track from current baseline to target, with a marker at the latest actual value.
 export function GapBar({ kind, from, to, current, unit = '' }) {
+  const { t } = useI18n()
   let total
   let cur
   let fromLabel
@@ -56,13 +59,13 @@ export function GapBar({ kind, from, to, current, unit = '' }) {
     curLabel = current || from || '—'
   } else {
     const f = Number(from)
-    const t = Number(to)
+    const tt = Number(to)
     const hasCur = current !== null && current !== undefined && current !== ''
     const c = hasCur ? Number(current) : f
-    total = t - f
+    total = tt - f
     cur = c - f
     fromLabel = `${f}${unit}`
-    toLabel = `${t}${unit}`
+    toLabel = `${tt}${unit}`
     curLabel = `${c}${unit}`
   }
   const progress = total === 0 ? 1 : cur / total
@@ -78,9 +81,11 @@ export function GapBar({ kind, from, to, current, unit = '' }) {
         </div>
       </div>
       <div className="gapbar-ends">
-        <span>现状 {fromLabel}</span>
-        <span className={reached ? 'gb-reached' : 'gb-pct'}>{reached ? '已达成 ✓' : `已完成 ${pctText}%`}</span>
-        <span>目标 {toLabel}</span>
+        <span>{t('v.current', { v: fromLabel })}</span>
+        <span className={reached ? 'gb-reached' : 'gb-pct'}>
+          {reached ? t('v.reached') : t('v.done', { p: pctText })}
+        </span>
+        <span>{t('v.target', { v: toLabel })}</span>
       </div>
     </div>
   )
