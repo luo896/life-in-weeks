@@ -31,7 +31,7 @@ export default function App() {
   // keep the tab title & html lang in sync with the active language
   useEffect(() => {
     document.title = t('app.title')
-    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en'
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang === 'ja' ? 'ja' : 'en'
   }, [t, lang])
 
   if (!state.profile.birthdate) return <Onboarding />

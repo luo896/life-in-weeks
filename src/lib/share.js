@@ -181,7 +181,7 @@ function buildReportHTML(state, t) {
 
   const logRows = sorted
     .map((l) => {
-      const adh = l.adherence ? Object.entries(l.adherence).filter(([, v]) => v).map(([k]) => k).join(lang === 'zh' ? '、' : ', ') : ''
+      const adh = l.adherence ? Object.entries(l.adherence).filter(([, v]) => v).map(([k]) => k).join(lang === 'zh' || lang === 'ja' ? '、' : ', ') : ''
       return `<tr><td>${esc(l.date)}</td><td>${esc(l.bedtime || '')}</td><td>${esc(l.wakeTime || '')}</td><td>${esc(l.weightKg ?? '')}</td><td>${esc(adh)}</td><td>${esc(l.note || '')}</td></tr>`
     })
     .join('')
@@ -193,7 +193,7 @@ function buildReportHTML(state, t) {
     })
     .join('')
 
-  return `<!doctype html><html lang="${lang === 'zh' ? 'zh-CN' : 'en'}"><head><meta charset="utf-8"><title>${esc(t('r.docTitle'))}</title>
+  return `<!doctype html><html lang="${lang === 'zh' ? 'zh-CN' : lang === 'ja' ? 'ja' : 'en'}"><head><meta charset="utf-8"><title>${esc(t('r.docTitle'))}</title>
 <style>
   :root{color-scheme:light}
   body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB",system-ui,sans-serif;max-width:820px;margin:40px auto;padding:0 24px;color:#1c2530;line-height:1.6}

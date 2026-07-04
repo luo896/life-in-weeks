@@ -35,7 +35,7 @@ export default function Plan() {
           <>
             <p className="muted">
               {t('pv.meta', {
-                d: new Date(plan.generatedAt).toLocaleString(lang === 'zh' ? 'zh-CN' : 'en-US'),
+                d: new Date(plan.generatedAt).toLocaleString(lang === 'zh' ? 'zh-CN' : lang === 'ja' ? 'ja-JP' : 'en-US'),
                 n: plan.milestones.length,
               })}
             </p>

@@ -28,6 +28,9 @@ export default function Onboarding() {
           <button className={`ot-btn ${lang === 'en' ? 'on' : ''}`} onClick={() => setProfile({ lang: 'en' })}>
             EN
           </button>
+          <button className={`ot-btn ${lang === 'ja' ? 'on' : ''}`} onClick={() => setProfile({ lang: 'ja' })}>
+            日本語
+          </button>
         </div>
         <div className="onboard-grid" aria-hidden>
           {Array.from({ length: 96 }, (_, i) => (

@@ -30,7 +30,7 @@
   "lifeExpectancyYears": 90,       // 预期寿命（岁），决定总周数 = round(年 × 52)
   "weightUnit": "kg",              // "kg" | "lb"，仅影响显示
   "gridOrientation": "",           // "" = 自动（宽屏横放/窄屏竖放）| "portrait" | "landscape"
-  "lang": ""                       // "" = 自动（跟随系统）| "zh" | "en"
+  "lang": ""                       // "" = 自动（跟随系统）| "zh" | "en" | "ja"
 }
 ```
 

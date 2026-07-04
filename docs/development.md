@@ -48,7 +48,7 @@ npm run preview   # 预览 dist/（端口 4173）
 
 ### 多语言（i18n）
 
-- 词典与工具都在 `src/lib/i18n.jsx`：`DICT.zh` / `DICT.en` 平铺键值（支持 `{var}` 插值；条目可为返回 JSX 的函数）。
+- 词典与工具都在 `src/lib/i18n.jsx`：`DICT.zh` / `DICT.en` / `DICT.ja` 平铺键值（支持 `{var}` 插值；条目可为返回 JSX 的函数）。
 - 组件内 `const { t, lang } = useI18n()`；语言偏好存 `profile.lang`（`''` = 跟随系统）。
 - 非 React 模块（`plan.js` / `share.js`）用 `makeT(resolveLang(...))` 取得 `t`。
 - **加新文案**：在 zh 和 en 两个词典里同时加同名键，缺失键会回退 zh 再回退键名。
