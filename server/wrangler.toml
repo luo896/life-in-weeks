@@ -9,14 +9,13 @@ compatibility_date = "2025-12-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "life-in-weeks"
-# 首次部署前运行 `npx wrangler d1 create life-in-weeks`，把返回的 database_id 填到这里
-database_id = "REPLACE_AFTER_D1_CREATE"
+database_id = "e994562b-796e-45ac-b5ff-443afcbe0bcb"
 
 [vars]
 # 允许跨域调用与 OAuth 回跳的前端地址（逗号分隔）
 ALLOWED_ORIGINS = "https://luo896.github.io,http://localhost:5174,http://localhost:5173"
 # GitHub OAuth App 的 Client ID（公开信息，可以放明文变量）
-GITHUB_CLIENT_ID = "REPLACE_AFTER_OAUTH_APP_CREATE"
+GITHUB_CLIENT_ID = "Ov23li9EAMHJAQSrlqqg"
 
 # 机密（不进代码库）：
 #   npx wrangler secret put GITHUB_CLIENT_SECRET
