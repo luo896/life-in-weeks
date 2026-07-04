@@ -1397,3 +1397,14 @@ input[type='time'] {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* 手机版顶栏设置入口（桌面用侧边栏的设置按钮） */
+.topbar-gear {
+  display: none;
+}
+@media (max-width: 860px) {
+  .topbar-gear {
+    display: inline-flex;
+    font-size: 16px;
+  }
+}

@@ -88,6 +88,9 @@ export default function App() {
             <div className="mini-bar" title={t('topbar.lifeUsed', { p: stats.pct.toFixed(1) })}>
               <div style={{ width: `${stats.pct}%` }} />
             </div>
+            <button className="icon-btn topbar-gear" title={t('nav.settings')} onClick={() => setSettingsOpen(true)}>
+              ⚙️
+            </button>
           </div>
         </header>
 
