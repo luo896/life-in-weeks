@@ -9,6 +9,10 @@
 
 🌐 **在线使用**：<https://luo896.github.io/life-in-weeks/>（推送 `main` 分支自动部署）
 
+**English** — A local-first web app that turns the urgency of a "life in weeks" (~90×52) countdown grid into concrete habit change: record your baseline habits, set goals, generate week-by-week improvement plans, check in daily, keep weekly journals, and share your progress. All data stays in your browser (localStorage). UI in Chinese / English / Japanese.
+
+**日本語** — 人生を約90×52週のグリッドで可視化し、現状の記録・目標設定・週ごとの改善プラン・毎日のチェックイン・週記・進捗共有までを行うローカル完結型Webアプリ。データはブラウザ（localStorage）のみに保存。UIは中・英・日対応。
+
 ## ✨ 功能总览
 
 | 模块 | 说明 |
@@ -74,10 +78,6 @@ src/
 
 ## 📚 文档
 
-- [使用指南](docs/user-guide.md) — 每个页面怎么用、推荐工作流
-- [架构设计](docs/architecture.md) — 技术决策、组件结构、网格自适应算法
-- [数据模型](docs/data-model.md) — localStorage 完整结构、备份格式、兼容性
-- [开发文档](docs/development.md) — 本地开发、代码约定、常见改动指引
 - [更新日志](CHANGELOG.md)
 
 ## ⚠️ 已知行为
