@@ -54,19 +54,27 @@ export function StoreProvider({ children }) {
     state,
     setProfile: (patch) => setState((s) => ({ ...s, profile: { ...s.profile, ...patch } })),
     setBaseline: (baseline) => setState((s) => ({ ...s, baseline })),
-    addGoal: (goal) => setState((s) => ({ ...s, goals: [...s.goals, { id: uid(), ...goal }] })),
+    // updatedAt 供多设备同步按条目合并使用（新者胜）
+    addGoal: (goal) =>
+      setState((s) => ({ ...s, goals: [...s.goals, { id: uid(), ...goal, updatedAt: new Date().toISOString() }] })),
     updateGoal: (id, patch) =>
-      setState((s) => ({ ...s, goals: s.goals.map((g) => (g.id === id ? { ...g, ...patch } : g)) })),
+      setState((s) => ({
+        ...s,
+        goals: s.goals.map((g) => (g.id === id ? { ...g, ...patch, updatedAt: new Date().toISOString() } : g)),
+      })),
     removeGoal: (id) => setState((s) => ({ ...s, goals: s.goals.filter((g) => g.id !== id) })),
     setPlan: (plan) => setState((s) => ({ ...s, plan })),
     addLog: (log) =>
       setState((s) => {
         // one entry per date — replace if the date already exists
         const rest = s.logs.filter((l) => l.date !== log.date)
-        return { ...s, logs: [{ id: uid(), ...log }, ...rest] }
+        return { ...s, logs: [{ id: uid(), ...log, updatedAt: new Date().toISOString() }, ...rest] }
       }),
     updateLog: (id, patch) =>
-      setState((s) => ({ ...s, logs: s.logs.map((l) => (l.id === id ? { ...l, ...patch } : l)) })),
+      setState((s) => ({
+        ...s,
+        logs: s.logs.map((l) => (l.id === id ? { ...l, ...patch, updatedAt: new Date().toISOString() } : l)),
+      })),
     removeLog: (id) => setState((s) => ({ ...s, logs: s.logs.filter((l) => l.id !== id) })),
     // weekly journal — one entry per week index; empty text removes it
     upsertJournal: (weekIndex, text) =>

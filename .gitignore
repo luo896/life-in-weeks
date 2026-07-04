@@ -7,3 +7,8 @@ dist-ssr
 
 # machine-specific Claude Code launch config (absolute paths)
 .claude/
+
+# Cloudflare Worker 本地机密与缓存
+server/.dev.vars
+server/.wrangler/
+server/node_modules/

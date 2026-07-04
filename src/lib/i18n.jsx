@@ -36,6 +36,20 @@ const zh = {
   'settings.save': '保存',
   'settings.cancel': '取消',
 
+  // account & sync
+  'settings.account': '账户',
+  'auth.signInGitHub': '使用 GitHub 登录',
+  'auth.signOut': '退出登录',
+  'auth.loginFailed': '登录失败，请重试',
+  'auth.onboardLogin': '已有账号？使用 GitHub 登录恢复数据',
+  'sync.now': '立即同步',
+  'sync.lastAt': '上次同步：{time}',
+  'sync.privacy': '登录后，数据会同步到应用的云端数据库（Cloudflare D1），便于多设备使用；不登录则只保存在本机浏览器。',
+  'sync.status.synced': '已同步',
+  'sync.status.syncing': '同步中…',
+  'sync.status.offline': '离线（改动已保存在本机）',
+  'sync.status.error': '同步失败，稍后会自动重试',
+
   // onboarding
   'ob.lead1': '如果把一生画成一张表，每个方块是一周 —— 你会发现格子比想象的少得多。',
   'ob.lead2': '用这份紧迫感，认真改造你的生活习惯。',
@@ -50,7 +64,7 @@ const zh = {
     </>
   ),
   'ob.start': '开始 →',
-  'ob.privacy': '数据只保存在本机浏览器，不会上传任何服务器。',
+  'ob.privacy': '数据默认只保存在本机浏览器；只有登录后才会同步到云端。',
 
   // life grid
   'grid.stats': (v) => (
@@ -330,6 +344,19 @@ const en = {
   'settings.save': 'Save',
   'settings.cancel': 'Cancel',
 
+  'settings.account': 'Account',
+  'auth.signInGitHub': 'Sign in with GitHub',
+  'auth.signOut': 'Sign out',
+  'auth.loginFailed': 'Sign-in failed, please try again',
+  'auth.onboardLogin': 'Have an account? Sign in with GitHub to restore your data',
+  'sync.now': 'Sync now',
+  'sync.lastAt': 'Last synced: {time}',
+  'sync.privacy': 'When signed in, your data syncs to the app’s cloud database (Cloudflare D1) so you can use it across devices; otherwise it stays in this browser only.',
+  'sync.status.synced': 'Synced',
+  'sync.status.syncing': 'Syncing…',
+  'sync.status.offline': 'Offline (changes saved on this device)',
+  'sync.status.error': 'Sync failed, will retry automatically',
+
   'ob.lead1': "Draw your whole life as a table, one square per week — and you'll find far fewer squares than you imagined.",
   'ob.lead2': 'Use that urgency to seriously rebuild your daily habits.',
   'ob.name': 'Your name (optional)',
@@ -343,7 +370,7 @@ const en = {
     </>
   ),
   'ob.start': 'Start →',
-  'ob.privacy': 'All data stays in this browser. Nothing is ever uploaded.',
+  'ob.privacy': 'Data stays in this browser by default; it only syncs to the cloud after you sign in.',
 
   'grid.stats': (v) => (
     <>
@@ -608,6 +635,19 @@ const ja = {
   'settings.save': '保存',
   'settings.cancel': 'キャンセル',
 
+  'settings.account': 'アカウント',
+  'auth.signInGitHub': 'GitHub でログイン',
+  'auth.signOut': 'ログアウト',
+  'auth.loginFailed': 'ログインに失敗しました。もう一度お試しください',
+  'auth.onboardLogin': 'アカウントをお持ちの方は GitHub でログインしてデータを復元',
+  'sync.now': '今すぐ同期',
+  'sync.lastAt': '最終同期：{time}',
+  'sync.privacy': 'ログインすると、データはアプリのクラウドデータベース（Cloudflare D1）に同期され、複数の端末で利用できます。未ログインの場合はこのブラウザにのみ保存されます。',
+  'sync.status.synced': '同期済み',
+  'sync.status.syncing': '同期中…',
+  'sync.status.offline': 'オフライン（変更はこの端末に保存済み）',
+  'sync.status.error': '同期に失敗しました。後で自動的に再試行します',
+
   'ob.lead1': '人生をひとつの表にすると、1マスが1週間 —— マスの数は想像よりずっと少ないことに気づくはず。',
   'ob.lead2': 'その切迫感を、生活習慣の改善に本気で使おう。',
   'ob.name': '名前（任意）',
@@ -621,7 +661,7 @@ const ja = {
     </>
   ),
   'ob.start': 'はじめる →',
-  'ob.privacy': 'データはこの端末のブラウザにのみ保存され、サーバーには一切送信されません。',
+  'ob.privacy': 'データは既定でこの端末のブラウザにのみ保存されます。ログインした場合のみクラウドに同期されます。',
 
   'grid.stats': (v) => (
     <>

@@ -1,0 +1,4 @@
+# 复制为 .dev.vars 后 `npm run dev` 会自动加载（.dev.vars 不进代码库）
+# 本地开发用假值即可；生产环境用 `npx wrangler secret put <名字>` 设置真值
+SESSION_SECRET=dev-only-secret-change-me
+DEV_LOGIN=1

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useStore } from './store.jsx'
 import { lifeStats } from './lib/date.js'
 import { useI18n, LANGS } from './lib/i18n.jsx'
+import { useSync } from './lib/sync.jsx'
 import { Button, Field } from './components/ui.jsx'
 import Onboarding from './components/Onboarding.jsx'
 import { LifeGridView } from './components/LifeGrid.jsx'
@@ -22,9 +23,12 @@ const NAV = [
   { key: 'share', icon: '🔗', labelKey: 'nav.share' },
 ]
 
+const SYNC_ICONS = { synced: '☁️', syncing: '🔄', offline: '📴', error: '⚠️' }
+
 export default function App() {
   const { state } = useStore()
   const { t, lang } = useI18n()
+  const { status, loggedIn } = useSync()
   const [view, setView] = useState('grid')
   const [settingsOpen, setSettingsOpen] = useState(false)
 
@@ -69,6 +73,15 @@ export default function App() {
         <header className="topbar">
           <div className="topbar-title">{t(NAV.find((n) => n.key === view)?.labelKey)}</div>
           <div className="topbar-right">
+            {loggedIn && (
+              <button
+                className={`sync-ind s-${status}`}
+                title={t(`sync.status.${status}`)}
+                onClick={() => setSettingsOpen(true)}
+              >
+                {SYNC_ICONS[status] || '☁️'}
+              </button>
+            )}
             <div className="mini-stat">
               <span className="mini-num">{stats.remaining.toLocaleString()}</span> {t('topbar.weeksLeft')}
             </div>
@@ -107,6 +120,46 @@ export default function App() {
   )
 }
 
+function AccountSection() {
+  const { t, lang } = useI18n()
+  const { status, user, loggedIn, loginError, login, logout, syncNow, lastSyncedAt } = useSync()
+  const locale = lang === 'zh' ? 'zh-CN' : lang === 'ja' ? 'ja-JP' : 'en-US'
+
+  if (!loggedIn) {
+    return (
+      <Field label={t('settings.account')}>
+        <div className="account-box">
+          <Button onClick={login}>{t('auth.signInGitHub')}</Button>
+          {loginError && <p className="account-error">{t('auth.loginFailed')}</p>}
+          <p className="account-hint">{t('sync.privacy')}</p>
+        </div>
+      </Field>
+    )
+  }
+  return (
+    <Field label={t('settings.account')}>
+      <div className="account-box">
+        <div className="account-row">
+          {user?.avatarUrl && <img className="account-avatar" src={user.avatarUrl} alt="" />}
+          <span className="account-name">{user?.name || user?.login || '…'}</span>
+          <span className={`account-status s-${status}`}>{t(`sync.status.${status}`)}</span>
+        </div>
+        {lastSyncedAt && (
+          <p className="account-hint">{t('sync.lastAt', { time: new Date(lastSyncedAt).toLocaleString(locale) })}</p>
+        )}
+        <div className="actions">
+          <Button variant="ghost" onClick={() => syncNow()}>
+            {t('sync.now')}
+          </Button>
+          <Button variant="ghost" onClick={logout}>
+            {t('auth.signOut')}
+          </Button>
+        </div>
+      </div>
+    </Field>
+  )
+}
+
 function Settings({ onClose }) {
   const { state, setProfile } = useStore()
   const { t } = useI18n()
@@ -133,6 +186,7 @@ function Settings({ onClose }) {
             ✕
           </button>
         </header>
+        <AccountSection />
         <Field label={t('settings.name')}>
           <input type="text" value={form.name} onChange={(e) => set({ name: e.target.value })} />
         </Field>

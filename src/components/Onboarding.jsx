@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { useStore } from '../store.jsx'
 import { useI18n } from '../lib/i18n.jsx'
+import { useSync } from '../lib/sync.jsx'
 import { Button, Field } from './ui.jsx'
 import { lifeStats } from '../lib/date.js'
 
 export default function Onboarding() {
   const { setProfile } = useStore()
   const { t, lang } = useI18n()
+  const { login, loggedIn, status } = useSync()
   const [name, setName] = useState('')
   const [birthdate, setBirthdate] = useState('')
   const [years, setYears] = useState(90)
@@ -64,6 +66,13 @@ export default function Onboarding() {
           {t('ob.start')}
         </Button>
         <p className="onboard-foot">{t('ob.privacy')}</p>
+        {loggedIn && status === 'syncing' ? (
+          <p className="onboard-foot">{t('sync.status.syncing')}</p>
+        ) : (
+          <button className="onboard-login" onClick={login}>
+            {t('auth.onboardLogin')}
+          </button>
+        )}
       </div>
     </div>
   )
