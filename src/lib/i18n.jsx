@@ -67,7 +67,7 @@ const zh = {
   'ev.hale.src': 'WHO 数据',
   'ev.experience': '体验有年龄窗口，越早经历，"记忆的股息"领得越久——想想它属于哪个年龄段。',
   'ev.experience.src': '《Die with Zero》',
-  'ev.lifespan': '默认 73，取自世卫组织全球平均预期寿命（2019）。你也可以改成让你最有触动的数字——比如更看重当下就填小一点。',
+  'ev.lifespan': '世卫组织：预期寿命全球约 73 岁、中国约 78、日本约 84（2019）。默认用全球平均 73；你也可以改成让你最有触动的数字。',
   'ev.lifespan.src': 'WHO 数据',
 
   // body metrics (v1.6)
@@ -420,7 +420,7 @@ const en = {
   'ev.hale.src': 'WHO data',
   'ev.experience': 'Experiences have age windows — the earlier you live them, the longer the memory dividend pays.',
   'ev.experience.src': 'Die with Zero',
-  'ev.lifespan': 'The default of 73 is the WHO global average life expectancy (2019). Feel free to change it to whatever number moves you most — pick a smaller one if you want to feel the present more sharply.',
+  'ev.lifespan': 'WHO: life expectancy is ~73 globally, ~78 in China, ~84 in Japan (2019). The default is the global average of 73 — change it to whatever number moves you most.',
   'ev.lifespan.src': 'WHO data',
 
   'b.height': 'Height (cm, optional)',
@@ -755,7 +755,7 @@ const ja = {
   'ev.hale.src': 'WHO データ',
   'ev.experience': '体験には年齢の窓がある。早く経験するほど「思い出の配当」を長く受け取れる。',
   'ev.experience.src': '『DIE WITH ZERO』',
-  'ev.lifespan': '既定値73は、WHOの世界平均寿命（2019）です。いちばん心に響く数字に変えてOK——今を強く意識したいなら小さめでも。',
+  'ev.lifespan': 'WHO：平均寿命は世界で約73歳、中国で約78歳、日本で約84歳（2019）。既定は世界平均の73。いちばん心に響く数字に変えてもOK。',
   'ev.lifespan.src': 'WHO データ',
 
   'b.height': '身長（cm・任意）',
