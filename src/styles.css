@@ -1408,3 +1408,44 @@ input[type='time'] {
     font-size: 16px;
   }
 }
+
+/* ---------- v1.6 循证与锚点 ---------- */
+.evidence {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: var(--muted);
+  margin: -2px 0 4px;
+  line-height: 1.6;
+}
+.ev-src {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(52, 211, 153, 0.5);
+  white-space: nowrap;
+}
+.ev-src:hover {
+  border-bottom-style: solid;
+}
+.wk-health {
+  background: #1f4636;
+}
+.wk-retire {
+  box-shadow: inset 0 0 0 1.5px #f59e0b;
+}
+.wk-exp {
+  box-shadow: inset 0 0 0 1.5px #a78bfa;
+}
+.sw-health {
+  background: #1f4636;
+}
+.sw-retire {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px #f59e0b;
+}
+.sw-exp {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px #a78bfa;
+}
+.tl-why {
+  color: var(--muted);
+}

@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useStore } from '../store.jsx'
 import { useI18n } from '../lib/i18n.jsx'
-import { Card, Field, Button, Empty } from './ui.jsx'
+import { Card, Field, Button, Empty, EvidenceHint } from './ui.jsx'
 import { GapBar } from './Visuals.jsx'
 import { METRICS } from '../lib/plan.js'
 import { latest } from '../lib/stats.js'
 
-const BLANK = { metric: 'bedtime', current: '', target: '', unit: 'kg', targetDate: '', pace: '', weeks: 8 }
+const BLANK = { metric: 'bedtime', current: '', target: '', unit: 'kg', targetDate: '', pace: '', weeks: 8, expAge: '', why: '' }
 
 export default function Goals() {
   const { state, addGoal, removeGoal } = useStore()
@@ -26,14 +26,27 @@ export default function Goals() {
   }
 
   const canAdd = () => {
-    if (form.metric === 'habit') return !!form.target.trim()
+    if (form.metric === 'habit' || form.metric === 'experience') return !!form.target.trim()
     return form.current !== '' && form.target !== ''
+  }
+
+  // 「希望在 N 岁前」→ 具体日期（出生日期 + N 年）
+  const ageToDate = (age) => {
+    if (!age || !state.profile.birthdate) return ''
+    const d = new Date(state.profile.birthdate)
+    d.setFullYear(d.getFullYear() + Number(age))
+    return d.toISOString().slice(0, 10)
   }
 
   const add = () => {
     if (!canAdd()) return
     const goal = { metric: form.metric, targetDate: form.targetDate }
-    if (form.metric === 'habit') {
+    if (form.metric === 'experience') {
+      goal.kind = 'experience'
+      goal.target = form.target.trim()
+      goal.why = form.why.trim()
+      goal.targetDate = form.expAge ? ageToDate(form.expAge) : form.targetDate
+    } else if (form.metric === 'habit') {
       goal.target = form.target.trim()
       goal.weeks = Number(form.weeks) || 8
     } else if (form.metric === 'weight') {
@@ -73,11 +86,47 @@ export default function Goals() {
                 {v.icon} {t(v.labelKey)}
               </button>
             ))}
+            <button
+              type="button"
+              className={`seg-btn ${form.metric === 'experience' ? 'seg-on' : ''}`}
+              onClick={() => pickMetric('experience')}
+            >
+              ✨ {t('g.expType')}
+            </button>
           </div>
         </Field>
 
         <div className="form-grid">
-          {form.metric === 'habit' ? (
+          {form.metric === 'experience' ? (
+            <>
+              <Field label={t('g.expTitle')}>
+                <input
+                  type="text"
+                  placeholder={t('g.expTitlePh')}
+                  value={form.target}
+                  onChange={(e) => set({ target: e.target.value })}
+                />
+              </Field>
+              <Field label={t('g.expAge')}>
+                <input
+                  type="number"
+                  min="1"
+                  max="120"
+                  value={form.expAge}
+                  onChange={(e) => set({ expAge: e.target.value })}
+                />
+              </Field>
+              <Field label={t('g.expWhy')}>
+                <input
+                  type="text"
+                  placeholder={t('g.expWhyPh')}
+                  value={form.why}
+                  onChange={(e) => set({ why: e.target.value })}
+                />
+              </Field>
+              <EvidenceHint k="experience" />
+            </>
+          ) : form.metric === 'habit' ? (
             <>
               <Field label={t('g.habitLabel')}>
                 <input
@@ -90,6 +139,7 @@ export default function Goals() {
               <Field label={t('g.weeks')}>
                 <input type="number" min="1" value={form.weeks} onChange={(e) => set({ weeks: e.target.value })} />
               </Field>
+              <EvidenceHint k="habit" />
             </>
           ) : m.kind === 'time' ? (
             <>
@@ -129,9 +179,11 @@ export default function Goals() {
               </Field>
             </>
           )}
-          <Field label={t('g.date')}>
-            <input type="date" value={form.targetDate} onChange={(e) => set({ targetDate: e.target.value })} />
-          </Field>
+          {form.metric !== 'experience' && (
+            <Field label={t('g.date')}>
+              <input type="date" value={form.targetDate} onChange={(e) => set({ targetDate: e.target.value })} />
+            </Field>
+          )}
         </div>
 
         <div className="actions">
@@ -154,13 +206,17 @@ export default function Goals() {
               return (
                 <li key={g.id} className="goal-item goal-item-viz">
                   <div className="goal-row">
-                    <span className="goal-ic">{mm.icon}</span>
+                    <span className="goal-ic">{g.metric === 'experience' ? '✨' : mm.icon}</span>
                     <div className="goal-main">
-                      <div className="goal-title">{mm.labelKey ? t(mm.labelKey) : g.metric}</div>
+                      <div className="goal-title">
+                        {g.metric === 'experience' ? g.target : mm.labelKey ? t(mm.labelKey) : g.metric}
+                      </div>
                       <div className="goal-detail">
-                        {g.metric === 'habit'
-                          ? `${g.target} · ${g.weeks || 8}w`
-                          : `${g.current ?? '—'} → ${g.target ?? '—'} ${g.unit && g.metric === 'weight' ? g.unit : ''}`}
+                        {g.metric === 'experience'
+                          ? g.why || t('g.expDetail')
+                          : g.metric === 'habit'
+                            ? `${g.target} · ${g.weeks || 8}w`
+                            : `${g.current ?? '—'} → ${g.target ?? '—'} ${g.unit && g.metric === 'weight' ? g.unit : ''}`}
                         {g.targetDate ? ` · ${t('g.expect', { d: g.targetDate })}` : ''}
                       </div>
                     </div>

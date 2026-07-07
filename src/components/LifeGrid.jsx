@@ -89,6 +89,24 @@ export function LifeGridView() {
     return m
   }, [journals])
 
+  // 可选锚点：健康区（预计健康无失能的周）与期望退休周
+  const healthWeeks = profile.healthspanYears
+    ? Math.min(stats.totalWeeks, Math.round(Number(profile.healthspanYears) * COLS))
+    : null
+  const retireWeek = profile.retirementAge ? Math.round(Number(profile.retirementAge) * COLS) : null
+
+  // 人生清单（体验型目标）落点周 → 星标
+  const expWeeks = useMemo(() => {
+    const s = new Set()
+    goals.forEach((g) => {
+      if (g.metric === 'experience' && g.targetDate) {
+        const wk = weekIndexForDate(profile.birthdate, g.targetDate)
+        if (wk != null && wk >= 0 && wk < stats.totalWeeks) s.add(wk)
+      }
+    })
+    return s
+  }, [goals, profile.birthdate, stats.totalWeeks])
+
   // Load the selected week's existing journal into the editor.
   useEffect(() => {
     setDraft(journalByWeek.get(selectedWeek)?.text || '')
@@ -111,14 +129,17 @@ export function LifeGridView() {
         if (b) {
           cls += ' wk-plan'
           style = { background: b.color }
-        } else cls += ' wk-future'
+        } else if (healthWeeks != null && i < healthWeeks) cls += ' wk-health'
+        else cls += ' wk-future'
       }
+      if (retireWeek != null && i === retireWeek) cls += ' wk-retire'
+      if (expWeeks.has(i)) cls += ' wk-exp'
       if (journalByWeek.has(i)) cls += ' wk-j'
       if (i === selectedWeek) cls += ' wk-sel'
       arr[i] = { i, cls, style }
     }
     return arr
-  }, [stats.totalWeeks, stats.lived, stats.currentWeekIndex, bands, journalByWeek, selectedWeek])
+  }, [stats.totalWeeks, stats.lived, stats.currentWeekIndex, bands, journalByWeek, selectedWeek, healthWeeks, retireWeek, expWeeks])
 
   if (!stats.ok) {
     return <div className="card">{t('grid.setBirthFirst')}</div>
@@ -209,7 +230,10 @@ export function LifeGridView() {
           <div className="legend">
             <span><i className="sw wk-past" /> {t('grid.past')}</span>
             <span><i className="sw wk-now" /> {t('grid.now')}</span>
+            {healthWeeks != null && <span><i className="sw sw-health" /> {t('grid.legendHealth')}</span>}
             <span><i className="sw wk-future" /> {t('grid.future')}</span>
+            {retireWeek != null && <span><i className="sw sw-retire" /> {t('grid.legendRetire')}</span>}
+            {expWeeks.size > 0 && <span><i className="sw sw-exp" /> {t('grid.legendExp')}</span>}
             <span><i className="sw wk-j-legend" /> {t('grid.legendJournal')}</span>
             {bands.map((b, i) => (
               <span key={i}><i className="sw" style={{ background: b.color }} /> {b.title}</span>
@@ -243,10 +267,17 @@ export function LifeGridView() {
                       )}
                     </div>
                     <div className="tl-what">
-                      <span className="tl-ic">{mm.icon}</span>
-                      {g.metric === 'habit'
-                        ? g.target
-                        : `${t(mm.labelKey)} ${g.current ?? '—'} → ${g.target ?? '—'} ${g.metric === 'weight' ? g.unit || 'kg' : ''}`}
+                      <span className="tl-ic">{g.metric === 'experience' ? '✨' : mm.icon}</span>
+                      {g.metric === 'experience' ? (
+                        <>
+                          {g.target}
+                          {g.why ? <span className="tl-why"> — {g.why}</span> : null}
+                        </>
+                      ) : g.metric === 'habit' ? (
+                        g.target
+                      ) : (
+                        `${t(mm.labelKey)} ${g.current ?? '—'} → ${g.target ?? '—'} ${g.metric === 'weight' ? g.unit || 'kg' : ''}`
+                      )}
                     </div>
                   </div>
                 </li>

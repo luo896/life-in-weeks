@@ -86,7 +86,10 @@ export function exportShareCard(state) {
   ctx.font = '400 ' + font(28)
   ctx.fillText(t('sc.sub', { n: stats.totalWeeks.toLocaleString() }), 80, 146)
 
-  // grid
+  // grid（健康预期寿命设置后，未来周分「健康区」与普通未来两种色）
+  const healthWeeks = profile.healthspanYears
+    ? Math.min(stats.totalWeeks, Math.round(Number(profile.healthspanYears) * cols))
+    : null
   const gridTop = 220
   const footerH = 360
   const availH = H - gridTop - footerH
@@ -101,6 +104,7 @@ export function exportShareCard(state) {
       const y = gridTop + r * pitch
       if (i < stats.lived) ctx.fillStyle = '#6a7787'
       else if (i === stats.lived) ctx.fillStyle = '#34d399'
+      else if (healthWeeks != null && i < healthWeeks) ctx.fillStyle = '#1f4636'
       else ctx.fillStyle = '#2b3542'
       roundRect(ctx, x, y, cell, cell, Math.max(1, cell * 0.22))
       ctx.fill()
@@ -164,6 +168,10 @@ function buildReportHTML(state, t) {
 
   const goalRows = (goals || [])
     .map((g) => {
+      if (g.metric === 'experience') {
+        // 人生清单：名称 + 缘由 + 期望日期
+        return `<tr><td>✨ ${esc(g.target || '')}</td><td>${esc(g.why || '—')}</td><td>—</td><td>${esc(g.targetDate || '')}</td></tr>`
+      }
       const m = METRICS[g.metric] || {}
       const cur = g.current ?? '—'
       const tar = g.target ?? '—'

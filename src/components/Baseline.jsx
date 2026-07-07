@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useStore } from '../store.jsx'
 import { useI18n } from '../lib/i18n.jsx'
-import { Card, Field, Button, Stat } from './ui.jsx'
+import { Card, Field, Button, Stat, EvidenceHint } from './ui.jsx'
 import { SleepBar } from './Visuals.jsx'
 import { sleepHours, todayISO } from '../lib/date.js'
+import { bmi, bmiBandAsia, whtr } from '../lib/health.js'
 
 export default function Baseline() {
   const { state, setBaseline } = useStore()
@@ -14,6 +15,8 @@ export default function Baseline() {
     bedtime: init.bedtime || '00:30',
     wakeTime: init.wakeTime || '08:00',
     weightKg: init.weightKg ?? '',
+    heightCm: init.heightCm ?? '',
+    waistCm: init.waistCm ?? '',
     dietTags: init.dietTags || [],
     dietNotes: init.dietNotes || '',
     exercise: init.exercise || '',
@@ -34,9 +37,18 @@ export default function Baseline() {
 
   const dur = sleepHours(form.bedtime, form.wakeTime)
   const unit = state.profile.weightUnit || 'kg'
+  // BMI/腰高比只在公制体重下计算（lb 用户暂不换算，显示 —）
+  const bmiVal = unit === 'kg' ? bmi(form.weightKg, form.heightCm) : null
+  const bmiBand = bmiBandAsia(bmiVal)
+  const whtrVal = whtr(form.waistCm, form.heightCm)
 
   const save = () => {
-    setBaseline({ ...form, weightKg: form.weightKg === '' ? '' : Number(form.weightKg) })
+    setBaseline({
+      ...form,
+      weightKg: form.weightKg === '' ? '' : Number(form.weightKg),
+      heightCm: form.heightCm === '' ? '' : Number(form.heightCm),
+      waistCm: form.waistCm === '' ? '' : Number(form.waistCm),
+    })
     setSaved(true)
   }
 
@@ -47,8 +59,11 @@ export default function Baseline() {
         <div className="stat-row">
           <Stat value={dur != null ? `${dur}h` : '—'} label={t('b.sleepPerNight')} accent />
           <Stat value={form.weightKg !== '' ? `${form.weightKg}` : '—'} label={t('b.weightLabel', { u: unit })} />
-          <Stat value={form.dietTags.length} label={t('b.dietFlags')} />
-          <Stat value={form.exercise ? t('b.yes') : '—'} label={t('b.exerciseHabit')} />
+          <Stat value={bmiVal != null ? `${bmiVal}` : '—'} label={bmiBand ? `BMI · ${t(`bmi.${bmiBand}`)}` : 'BMI'} />
+          <Stat
+            value={whtrVal != null ? `${whtrVal}` : '—'}
+            label={whtrVal != null ? `${t('b.whtr')} · ${t(whtrVal < 0.5 ? 'whtr.ok' : 'whtr.high')}` : t('b.whtr')}
+          />
         </div>
         <div className="viz-label">{t('b.sleepViz')}</div>
         <SleepBar bedtime={form.bedtime} wakeTime={form.wakeTime} />
@@ -74,6 +89,7 @@ export default function Baseline() {
           <Field label={t('b.wake')} hint={dur != null ? t('b.sleepHint', { h: dur }) : ''}>
             <input type="time" value={form.wakeTime} onChange={(e) => set({ wakeTime: e.target.value })} />
           </Field>
+          <EvidenceHint k="sleep" />
           <Field label={t('b.weight', { u: unit })}>
             <input
               type="number"
@@ -84,6 +100,27 @@ export default function Baseline() {
               onChange={(e) => set({ weightKg: e.target.value })}
             />
           </Field>
+          <Field label={t('b.height')}>
+            <input
+              type="number"
+              step="0.1"
+              inputMode="decimal"
+              placeholder="170"
+              value={form.heightCm}
+              onChange={(e) => set({ heightCm: e.target.value })}
+            />
+          </Field>
+          <Field label={t('b.waist')}>
+            <input
+              type="number"
+              step="0.1"
+              inputMode="decimal"
+              placeholder="80"
+              value={form.waistCm}
+              onChange={(e) => set({ waistCm: e.target.value })}
+            />
+          </Field>
+          <EvidenceHint k="weight" />
           <Field label={t('b.exercise')}>
             <input
               type="text"
@@ -100,6 +137,8 @@ export default function Baseline() {
               onChange={(e) => set({ screenTime: e.target.value })}
             />
           </Field>
+          <EvidenceHint k="activity" />
+          <EvidenceHint k="screen" />
         </div>
 
         <Field label={t('b.dietTags')}>
@@ -116,6 +155,8 @@ export default function Baseline() {
             ))}
           </div>
         </Field>
+
+        <EvidenceHint k="diet" />
 
         <Field label={t('b.dietNotes')}>
           <textarea

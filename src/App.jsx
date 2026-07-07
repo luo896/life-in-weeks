@@ -3,7 +3,7 @@ import { useStore } from './store.jsx'
 import { lifeStats } from './lib/date.js'
 import { useI18n, LANGS } from './lib/i18n.jsx'
 import { useSync } from './lib/sync.jsx'
-import { Button, Field } from './components/ui.jsx'
+import { Button, Field, EvidenceHint } from './components/ui.jsx'
 import Onboarding from './components/Onboarding.jsx'
 import { LifeGridView } from './components/LifeGrid.jsx'
 import Baseline from './components/Baseline.jsx'
@@ -171,12 +171,19 @@ function Settings({ onClose }) {
     name: p.name || '',
     birthdate: p.birthdate || '',
     lifeExpectancyYears: p.lifeExpectancyYears || 90,
+    healthspanYears: p.healthspanYears ?? '',
+    retirementAge: p.retirementAge ?? '',
     weightUnit: p.weightUnit || 'kg',
     lang: p.lang || '',
   })
   const set = (patch) => setForm((f) => ({ ...f, ...patch }))
   const save = () => {
-    setProfile({ ...form, lifeExpectancyYears: Number(form.lifeExpectancyYears) || 90 })
+    setProfile({
+      ...form,
+      lifeExpectancyYears: Number(form.lifeExpectancyYears) || 90,
+      healthspanYears: form.healthspanYears === '' ? '' : Number(form.healthspanYears) || '',
+      retirementAge: form.retirementAge === '' ? '' : Number(form.retirementAge) || '',
+    })
     onClose()
   }
 
@@ -203,6 +210,27 @@ function Settings({ onClose }) {
             max="120"
             value={form.lifeExpectancyYears}
             onChange={(e) => set({ lifeExpectancyYears: e.target.value })}
+          />
+        </Field>
+        <Field label={t('settings.healthspan')}>
+          <input
+            type="number"
+            min="30"
+            max="120"
+            placeholder="68"
+            value={form.healthspanYears}
+            onChange={(e) => set({ healthspanYears: e.target.value })}
+          />
+        </Field>
+        <EvidenceHint k="hale" />
+        <Field label={t('settings.retirement')}>
+          <input
+            type="number"
+            min="30"
+            max="100"
+            placeholder="63"
+            value={form.retirementAge}
+            onChange={(e) => set({ retirementAge: e.target.value })}
           />
         </Field>
         <Field label={t('settings.weightUnit')}>

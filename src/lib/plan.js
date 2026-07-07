@@ -19,6 +19,8 @@ export function generatePlan(baseline, goals, opts = {}) {
   const milestones = []
 
   for (const g of goals) {
+    // 人生清单（体验型）不参与逐周改善计划——它们是里程碑，不是习惯
+    if (g.metric === 'experience') continue
     if (g.metric === 'bedtime' || g.metric === 'wakeTime') {
       const from = g.current
       const to = g.target

@@ -1,4 +1,22 @@
 // Small presentational building blocks shared across views.
+import { useI18n } from '../lib/i18n.jsx'
+import { EVIDENCE_URLS } from '../lib/evidence.js'
+
+// 循证提示：一行权威建议 + 可点开的来源链接（键在 i18n 的 ev.* 下）
+export function EvidenceHint({ k }) {
+  const { t } = useI18n()
+  const url = EVIDENCE_URLS[k]
+  return (
+    <p className="evidence">
+      <span aria-hidden>📖</span> {t(`ev.${k}`)}{' '}
+      {url && (
+        <a className="ev-src" href={url} target="_blank" rel="noreferrer">
+          {t(`ev.${k}.src`)} ↗
+        </a>
+      )}
+    </p>
+  )
+}
 
 export function Card({ title, subtitle, right, children, className = '' }) {
   return (
