@@ -805,12 +805,23 @@ input[type='time'] {
   width: 100%;
   max-width: 420px;
   box-shadow: var(--shadow);
+  /* 内容超高时弹窗内部滚动，保证保存按钮始终可达（尤其手机端） */
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
 }
 .modal-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  /* 滚动时标题与关闭按钮保持在顶部 */
+  position: sticky;
+  top: -24px;
+  background: var(--card);
+  margin: -24px -24px 16px;
+  padding: 24px 24px 12px;
+  z-index: 1;
 }
 
 /* ---------- Onboarding ---------- */
