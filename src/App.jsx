@@ -254,6 +254,14 @@ function Settings({ onClose }) {
             {t('settings.cancel')}
           </Button>
         </div>
+        <a
+          className="settings-about"
+          href={`${import.meta.env.BASE_URL}about.html`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {t('settings.about')}
+        </a>
       </div>
     </div>
   )

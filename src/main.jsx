@@ -14,3 +14,12 @@ createRoot(document.getElementById('root')).render(
     </StoreProvider>
   </React.StrictMode>,
 )
+
+// PWA：注册 Service Worker（仅生产构建；BASE_URL 适配 GitHub Pages 子路径）
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => {
+      /* 注册失败不影响应用使用 */
+    })
+  })
+}

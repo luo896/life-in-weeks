@@ -7,7 +7,8 @@
 
 **数据默认只保存在本机浏览器（localStorage）；用 GitHub 账号登录后可多设备同步（Cloudflare Worker + D1），随时可退出。**
 
-🌐 **在线使用**：<https://luo896.github.io/life-in-weeks/>（推送 `main` 分支自动部署）
+🌐 **在线使用**：<https://luo896.github.io/life-in-weeks/>（推送 `main` 分支自动部署，支持 PWA 安装到主屏幕）
+📖 **设计哲学与使用说明**：<https://luo896.github.io/life-in-weeks/about.html>
 
 **English** — A local-first web app that turns the urgency of a "life in weeks" (~90×52) countdown grid into concrete habit change: record your baseline habits, set goals, generate week-by-week improvement plans, check in daily, keep weekly journals, and share your progress. Data stays in your browser by default; optional GitHub sign-in enables multi-device sync (Cloudflare Worker + D1). UI in Chinese / English / Japanese.
 

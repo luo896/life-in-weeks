@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>人生周历 · 设计哲学 | Life in Weeks · Philosophy</title>
+<meta name="description" content="你的人生，大约是 4000 个格子。人生周历的设计思路、科学依据与使用方法。Your life is about 4,000 squares — the philosophy and evidence behind Life in Weeks." />
+<meta property="og:title" content="人生周历 · 设计哲学 — 你的人生，大约是 4000 个格子" />
+<meta property="og:description" content="有限性驱动而非恐惧驱动 · 健康寿命优先 · 循证而不说教 · 微习惯 · 意义与关系。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://luo896.github.io/life-in-weeks/about.html" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230e1217'/%3E%3Cg fill='%2334d399'%3E%3Crect x='20' y='20' width='14' height='14' rx='3'/%3E%3Crect x='43' y='20' width='14' height='14' rx='3' opacity='.5'/%3E%3Crect x='66' y='20' width='14' height='14' rx='3' opacity='.25'/%3E%3Crect x='20' y='43' width='14' height='14' rx='3' opacity='.5'/%3E%3Crect x='43' y='43' width='14' height='14' rx='3'/%3E%3Crect x='66' y='43' width='14' height='14' rx='3' opacity='.25'/%3E%3Crect x='20' y='66' width='14' height='14' rx='3' opacity='.25'/%3E%3Crect x='43' y='66' width='14' height='14' rx='3' opacity='.5'/%3E%3Crect x='66' y='66' width='14' height='14' rx='3'/%3E%3C/g%3E%3C/svg%3E" />
+<style>
+  :root {
+    --bg: #0f141a; --card: #161d26; --line: #202a36;
+    --text: #f5f7fa; --muted: #8b98a5; --accent: #34d399; --violet: #a78bfa; --amber: #f59e0b;
+    --past: #6a7787; --future: #2b3542; --health: #1f4636;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 16px/1.75 -apple-system, "PingFang SC", "Hiragino Sans", "Hiragino Kaku Gothic ProN", system-ui, sans-serif;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 24px 20px 80px; }
+  .langbar { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 8px; }
+  .langbar button {
+    background: none; border: 1px solid var(--line); color: var(--muted);
+    border-radius: 8px; padding: 4px 12px; font-size: 13px; cursor: pointer;
+  }
+  .langbar button.on { color: var(--accent); border-color: var(--accent); }
+  .hero { text-align: center; padding: 28px 0 8px; }
+  .minigrid { display: grid; grid-template-columns: repeat(52, 1fr); gap: 2px; margin: 22px 0; }
+  .minigrid i { aspect-ratio: 1; border-radius: 1.5px; background: var(--future); }
+  .minigrid i.p { background: var(--past); }
+  .minigrid i.n { background: var(--accent); box-shadow: 0 0 6px rgba(52,211,153,.8); }
+  .minigrid i.h { background: var(--health); }
+  .minigrid i.s { background: var(--violet); }
+  .minigrid i.r { box-shadow: inset 0 0 0 1.2px var(--amber); }
+  h1 { font-size: 30px; margin: 8px 0 4px; letter-spacing: .5px; }
+  .tagline { font-size: 19px; color: var(--accent); margin: 6px 0 2px; font-weight: 600; }
+  .sub { color: var(--muted); font-size: 14.5px; }
+  .cta { display: flex; gap: 12px; justify-content: center; margin: 22px 0 6px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 10px 22px; border-radius: 10px; text-decoration: none;
+    font-weight: 600; font-size: 15px;
+  }
+  .btn-p { background: var(--accent); color: #0a3a2a; }
+  .btn-g { border: 1px solid var(--line); color: var(--text); }
+  h2 { font-size: 21px; margin: 44px 0 6px; }
+  h2 .hx { color: var(--accent); margin-right: 8px; }
+  p { margin: 10px 0; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin: 14px 0; }
+  .card h3 { margin: 0 0 6px; font-size: 16.5px; }
+  .card p { margin: 4px 0; color: var(--muted); font-size: 14.5px; }
+  .muted { color: var(--muted); }
+  ul.refs { padding-left: 20px; }
+  ul.refs li { margin: 7px 0; font-size: 14.5px; color: var(--muted); }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted rgba(52,211,153,.45); }
+  a:hover { border-bottom-style: solid; }
+  .no { color: var(--muted); font-size: 14.5px; }
+  .no li { margin: 5px 0; }
+  .steps { counter-reset: s; }
+  .steps .card { position: relative; padding-left: 58px; }
+  .steps .card::before {
+    counter-increment: s; content: counter(s);
+    position: absolute; left: 18px; top: 20px; width: 26px; height: 26px;
+    border-radius: 50%; background: rgba(52,211,153,.14); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
+  }
+  footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13.5px; text-align: center; }
+  .l10n { display: none; }
+  .l10n.show { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="langbar" aria-label="language">
+    <button data-l="zh">中文</button><button data-l="en">English</button><button data-l="ja">日本語</button>
+  </nav>
+
+  <div class="minigrid" id="mg" aria-hidden="true"></div>
+
+  <!-- ============ 中文 ============ -->
+  <div class="l10n" data-lang="zh">
+    <header class="hero">
+      <h1>人生周历 · 习惯改造计划</h1>
+      <p class="tagline">你的人生，大约是 4000 个格子。</p>
+      <p class="sub">一格一周。这个应用帮你诚实地看见它们——然后亲手把剩下的格子涂上颜色。</p>
+      <div class="cta">
+        <a class="btn btn-p" href="./">打开应用</a>
+        <a class="btn btn-g" href="https://github.com/luo896/life-in-weeks" target="_blank" rel="noreferrer">查看源码</a>
+      </div>
+    </header>
+
+    <h2><span class="hx">◳</span>缘起</h2>
+    <p>一切开始于一则随手的笔记：第一次看到「人生 90×52 周倒计时表」时的震撼——原来一生画在一页纸上，格子比想象的少得多。</p>
+    <p>大多数人被这种图击中之后，焦虑三天，然后照旧生活。我们想做的，是把这份震撼<b>接住</b>：不停在恐惧，而是变成一套具体的行动系统——记录现状、设定目标、逐周改善、把想经历的事画上网格。</p>
+
+    <h2><span class="hx">✦</span>五条设计哲学</h2>
+    <div class="card"><h3>1 · 有限性驱动，而非恐惧驱动</h3><p>倒计时的意义不是焦虑，而是选择。正如《四千周》所说：时间管理的本质，是决定什么不做。往网格上放一件事，就是在无数可能里做了一次郑重的选择。</p></div>
+    <div class="card"><h3>2 · 健康寿命优先于总寿命</h3><p>比"活多久"更值得管理的是"健康地活多久"（WHO 健康预期寿命与总寿命差约 8–10 年）。好习惯的真正回报，是把失能的晚年压缩得更短（Fries「病残期压缩」，NEJM 1980）——在周历上，这就是绿色健康区的长度。</p></div>
+    <div class="card"><h3>3 · 循证，而不说教</h3><p>应用里每一条建议都注明权威来源（WHO、美国睡眠医学会、UCL……），点开即可验证；而每一条都可以忽略——自主感是习惯得以持续的心理前提（自我决定论）。我们提供证据，不提供指令。</p></div>
+    <div class="card"><h3>4 · 微习惯与身份认同</h3><p>习惯平均需要 66 天成形（UCL Lally 2010，个体 18–254 天）；起步要小到不可能失败（Fogg）；而比"达成目标"更持久的，是"成为那样的人"（《原子习惯》）。所以计划生成器给你的是每周一小步，不是宏大宣言。</p></div>
+    <div class="card"><h3>5 · 意义与关系是终极指标</h3><p>哈佛成人发展研究追踪了 85 年，预测幸福与健康的最强因子不是财富或成就，而是关系质量。网格的尽头不是数字——是你想成为的人、想经历的事、想珍惜的人。</p></div>
+
+    <h2><span class="hx">▦</span>怎么用：三层结构</h2>
+    <div class="steps">
+      <div class="card"><h3>修复 —— 看清现状，逐周改善</h3><p>记录现状基线（睡眠、体重、饮食……）→ 设定目标 → 一键生成循序渐进的逐周计划 → 每日打卡。每项输入旁都有权威参考值。</p></div>
+      <div class="card"><h3>锚点 —— 让健康看得见</h3><p>在设置里填上健康预期寿命与期望退休年龄，周历会分出绿色「健康区」和退休标记。你的习惯，决定绿色区域的长度。</p></div>
+      <div class="card"><h3>意义 —— 人生清单</h3><p>写下有生之年想经历的事（"去一次欧洲"）和希望的年龄，它会变成网格上的紫色星标。体验有年龄窗口——越早经历，记忆的股息领得越久（《Die with Zero》）。</p></div>
+    </div>
+
+    <h2><span class="hx">⚑</span>我们不做什么</h2>
+    <ul class="no">
+      <li><b>不做排行与攀比</b>——外在比较会侵蚀内在动机，这是你和自己人生的对话；</li>
+      <li><b>不做积分商城式游戏化</b>——奖励应该来自生活本身的改善；</li>
+      <li><b>不做没有来源的建议</b>——写不出出处的话，我们不说。</li>
+    </ul>
+
+    <h2><span class="hx">🔒</span>数据与隐私</h2>
+    <p class="muted">数据默认只保存在你自己的浏览器里；只有用 GitHub 登录后才会同步到云端（开发者自有的 Cloudflare 数据库，仅用于你的多设备访问）。随时可以导出完整 JSON 备份；退出登录不清除本机数据。<a href="https://github.com/luo896/life-in-weeks" target="_blank" rel="noreferrer">全部代码开源</a>。</p>
+
+    <h2><span class="hx">💬</span>留下你的意见</h2>
+    <p class="muted">这个工具因真实的使用反馈而进化——路线图上的多数功能来自使用者的提议。</p>
+    <div class="cta" style="justify-content:flex-start">
+      <a class="btn btn-p" href="https://github.com/luo896/life-in-weeks/issues/new" target="_blank" rel="noreferrer">提交反馈（GitHub）</a>
+      <a class="btn btn-g" href="mailto:xinanduoluo@gmail.com?subject=%E4%BA%BA%E7%94%9F%E5%91%A8%E5%8E%86%E5%8F%8D%E9%A6%88">写邮件</a>
+    </div>
+
+    <h2><span class="hx">📚</span>引用与延伸阅读</h2>
+    <ul class="refs">
+      <li>AASM &amp; SRS：<a href="https://jcsm.aasm.org/doi/10.5664/jcsm.4758" target="_blank" rel="noreferrer">成人睡眠时长共识声明（2015）</a></li>
+      <li>WHO：<a href="https://www.who.int/news-room/fact-sheets/detail/physical-activity" target="_blank" rel="noreferrer">身体活动指南</a> · <a href="https://www.who.int/news-room/fact-sheets/detail/healthy-diet" target="_blank" rel="noreferrer">健康饮食</a> · <a href="https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight" target="_blank" rel="noreferrer">肥胖与超重</a> · <a href="https://www.who.int/data/gho" target="_blank" rel="noreferrer">健康预期寿命数据（GHO）</a></li>
+      <li>Fries：<a href="https://www.nejm.org/doi/full/10.1056/NEJM198007173030304" target="_blank" rel="noreferrer">Aging, Natural Death, and the Compression of Morbidity（NEJM 1980）</a></li>
+      <li>Lally 等：<a href="https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674" target="_blank" rel="noreferrer">How are habits formed（EJSP 2010）</a></li>
+      <li><a href="https://www.adultdevelopmentstudy.org/" target="_blank" rel="noreferrer">哈佛成人发展研究</a> · <a href="https://www.halhershfield.com/" target="_blank" rel="noreferrer">Hershfield：未来自我连续性</a> · <a href="https://selfdeterminationtheory.org/" target="_blank" rel="noreferrer">自我决定论</a></li>
+      <li>书：<a href="https://www.oliverburkeman.com/" target="_blank" rel="noreferrer">《四千周》</a> · <a href="https://www.diewithzerobook.com/" target="_blank" rel="noreferrer">《Die with Zero》</a> · <a href="https://jamesclear.com/atomic-habits" target="_blank" rel="noreferrer">《原子习惯》</a> · <a href="https://tinyhabits.com/" target="_blank" rel="noreferrer">《微习惯》</a></li>
+    </ul>
+
+    <footer>人生周历 · Life in Weeks — <a href="https://github.com/luo896/life-in-weeks" target="_blank" rel="noreferrer">开源仓库</a> · <a href="https://github.com/luo896/life-in-weeks/blob/main/CHANGELOG.md" target="_blank" rel="noreferrer">更新日志</a> · MIT</footer>
+  </div>
+
+  <!-- ============ English ============ -->
+  <div class="l10n" data-lang="en">
+    <header class="hero">
+      <h1>Life in Weeks · Habit Reset</h1>
+      <p class="tagline">Your life is about 4,000 squares.</p>
+      <p class="sub">One square, one week. This app helps you see them honestly — then color the remaining ones with your own hands.</p>
+      <div class="cta">
+        <a class="btn btn-p" href="./">Open the app</a>
+        <a class="btn btn-g" href="https://github.com/luo896/life-in-weeks" target="_blank" rel="noreferrer">Source code</a>
+      </div>
+    </header>
+
+    <h2><span class="hx">◳</span>Why this exists</h2>
+    <p>It began with a hastily written note: the shock of first seeing a "life in 90×52 weeks" countdown chart — a whole life on one page, far fewer squares than imagined.</p>
+    <p>Most people feel that jolt, worry for three days, then carry on. We wanted to <b>catch</b> that jolt instead: not to dwell in fear, but to turn it into a concrete system — record your baseline, set goals, improve week by week, and draw the things you want to live for onto the grid.</p>
+
+    <h2><span class="hx">✦</span>Five design principles</h2>
+    <div class="card"><h3>1 · Driven by finitude, not fear</h3><p>A countdown is not for anxiety; it is for choosing. As <i>Four Thousand Weeks</i> puts it, time management is deciding what not to do. Placing something on the grid is a deliberate choice among countless possibilities.</p></div>
+    <div class="card"><h3>2 · Healthspan over lifespan</h3><p>What deserves managing is not how long you live but how long you live in good health (WHO's healthy life expectancy trails total lifespan by ~8–10 years). The real payoff of good habits is compressing late-life disability (Fries, NEJM 1980) — on the grid, that is the length of the green zone.</p></div>
+    <div class="card"><h3>3 · Evidence, not sermons</h3><p>Every suggestion cites an authoritative source (WHO, AASM, UCL…) you can click and verify — and every one can be ignored. Autonomy is the psychological precondition for lasting habits (self-determination theory). We offer evidence, not orders.</p></div>
+    <div class="card"><h3>4 · Tiny habits, identity change</h3><p>Habits take ~66 days on average to form (Lally 2010, range 18–254); the first step should be too small to fail (Fogg); and more durable than reaching a goal is becoming the kind of person (Atomic Habits). So the planner gives you one small step per week, not grand declarations.</p></div>
+    <div class="card"><h3>5 · Meaning and relationships are the final metrics</h3><p>The Harvard Study of Adult Development, running 85+ years, found the strongest predictor of happiness and health is not wealth or achievement but the quality of relationships. The grid does not end in a number — it ends in who you become, what you experience, and whom you cherish.</p></div>
+
+    <h2><span class="hx">▦</span>How to use: three layers</h2>
+    <div class="steps">
+      <div class="card"><h3>Repair — see your baseline, improve weekly</h3><p>Record your current habits (sleep, weight, diet…) → set goals → generate a gradual week-by-week plan → check in daily. Authoritative reference values sit beside every input.</p></div>
+      <div class="card"><h3>Anchors — make health visible</h3><p>Set your healthy life expectancy and target retirement age in Settings; the grid gains a green "healthy zone" and a retirement marker. Your habits decide how long the green lasts.</p></div>
+      <div class="card"><h3>Meaning — the bucket list</h3><p>Write down what you want to experience in this lifetime ("a trip across Europe") and by what age; it becomes a violet star on your grid. Experiences have age windows — the earlier you live them, the longer the memory dividend pays (Die with Zero).</p></div>
+    </div>
+
+    <h2><span class="hx">⚑</span>What we refuse to build</h2>
+    <ul class="no">
+      <li><b>No leaderboards or social comparison</b> — this is a conversation between you and your own life;</li>
+      <li><b>No points-shop gamification</b> — the reward should be your life improving;</li>
+      <li><b>No advice without a source</b> — if we cannot cite it, we do not say it.</li>
+    </ul>
+
+    <h2><span class="hx">🔒</span>Data &amp; privacy</h2>
+    <p class="muted">Data stays in your browser by default; only after signing in with GitHub does it sync to the cloud (the developer's own Cloudflare database, solely for your multi-device access). Export a full JSON backup anytime; signing out never deletes local data. <a href="https://github.com/luo896/life-in-weeks" target="_blank" rel="noreferrer">Fully open source</a>.</p>
+
+    <h2><span class="hx">💬</span>Leave your thoughts</h2>
+    <p class="muted">This tool evolves through real feedback — most items on the roadmap came from users' suggestions.</p>
+    <div class="cta" style="justify-content:flex-start">
+      <a class="btn btn-p" href="https://github.com/luo896/life-in-weeks/issues/new" target="_blank" rel="noreferrer">Give feedback (GitHub)</a>
+      <a class="btn btn-g" href="mailto:xinanduoluo@gmail.com?subject=Life%20in%20Weeks%20feedback">Email</a>
+    </div>
+
+    <h2><span class="hx">📚</span>References &amp; further reading</h2>
+    <ul class="refs">
+      <li>AASM &amp; SRS: <a href="https://jcsm.aasm.org/doi/10.5664/jcsm.4758" target="_blank" rel="noreferrer">Consensus on adult sleep duration (2015)</a></li>
+      <li>WHO: <a href="https://www.who.int/news-room/fact-sheets/detail/physical-activity" target="_blank" rel="noreferrer">Physical activity</a> · <a href="https://www.who.int/news-room/fact-sheets/detail/healthy-diet" target="_blank" rel="noreferrer">Healthy diet</a> · <a href="https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight" target="_blank" rel="noreferrer">Obesity &amp; overweight</a> · <a href="https://www.who.int/data/gho" target="_blank" rel="noreferrer">Healthy life expectancy (GHO)</a></li>
+      <li>Fries: <a href="https://www.nejm.org/doi/full/10.1056/NEJM198007173030304" target="_blank" rel="noreferrer">Compression of Morbidity (NEJM 1980)</a></li>
+      <li>Lally et al.: <a href="https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674" target="_blank" rel="noreferrer">How are habits formed (EJSP 2010)</a></li>
+      <li><a href="https://www.adultdevelopmentstudy.org/" target="_blank" rel="noreferrer">Harvard Study of Adult Development</a> · <a href="https://www.halhershfield.com/" target="_blank" rel="noreferrer">Hershfield: future self-continuity</a> · <a href="https://selfdeterminationtheory.org/" target="_blank" rel="noreferrer">Self-determination theory</a></li>
+      <li>Books: <a href="https://www.oliverburkeman.com/" target="_blank" rel="noreferrer">Four Thousand Weeks</a> · <a href="https://www.diewithzerobook.com/" target="_blank" rel="noreferrer">Die with Zero</a> · <a href="https://jamesclear.com/atomic-habits" target="_blank" rel="noreferrer">Atomic Habits</a> · <a href="https://tinyhabits.com/" target="_blank" rel="noreferrer">Tiny Habits</a></li>
+    </ul>
+
+    <footer>Life in Weeks — <a href="https://github.com/luo896/life-in-weeks" target="_blank" rel="noreferrer">Repository</a> · <a href="https://github.com/luo896/life-in-weeks/blob/main/CHANGELOG.md" target="_blank" rel="noreferrer">Changelog</a> · MIT</footer>
+  </div>
+
+  <!-- ============ 日本語 ============ -->
+  <div class="l10n" data-lang="ja">
+    <header class="hero">
+      <h1>ライフカレンダー · 習慣リセット</h1>
+      <p class="tagline">人生は、およそ4000個のマスでできている。</p>
+      <p class="sub">1マス＝1週間。このアプリは、それを正直に見つめ——残りのマスに自分の手で色を塗るための道具です。</p>
+      <div class="cta">
+        <a class="btn btn-p" href="./">アプリを開く</a>
+        <a class="btn btn-g" href="https://github.com/luo896/life-in-weeks" target="_blank" rel="noreferrer">ソースコード</a>
+      </div>
+    </header>
+
+    <h2><span class="hx">◳</span>はじまり</h2>
+    <p>すべては一枚のメモから始まりました。「人生90×52週のカウントダウン表」を初めて見たときの衝撃——一生が1ページに収まり、マスは想像よりずっと少なかった。</p>
+    <p>多くの人はその衝撃を受けて三日悩み、また元の生活に戻ります。私たちがつくりたかったのは、その衝撃を<b>受け止める</b>仕組み——恐怖で終わらせず、現状の記録・目標設定・週ごとの改善・経験したいことをグリッドに描く、具体的な行動システムに変えることです。</p>
+
+    <h2><span class="hx">✦</span>5つの設計哲学</h2>
+    <div class="card"><h3>1 · 恐怖ではなく、有限性を原動力に</h3><p>カウントダウンの意味は不安ではなく選択。『限りある時間の使い方』が言うように、時間管理の本質は「何をしないか」を決めること。グリッドに何かを置くことは、無数の可能性の中での真剣な選択です。</p></div>
+    <div class="card"><h3>2 · 寿命より健康寿命</h3><p>管理すべきは「どれだけ生きるか」より「どれだけ健康に生きるか」（WHOの健康寿命は平均寿命より8〜10年短い）。良い習慣の本当の報酬は、要介護期間を短く圧縮すること（Fries、NEJM 1980）——グリッド上では、緑の健康ゾーンの長さです。</p></div>
+    <div class="card"><h3>3 · 説教ではなく、エビデンス</h3><p>アプリ内のすべての提案に権威ある出典（WHO、米国睡眠医学会、UCL…）を明記し、クリックして検証できます。そして、どの提案も無視してかまいません——自律性こそ習慣が続く心理的前提（自己決定理論）。私たちは証拠を提供し、命令はしません。</p></div>
+    <div class="card"><h3>4 · 小さな習慣とアイデンティティ</h3><p>習慣の定着には平均66日（Lally 2010、個人差18〜254日）。最初の一歩は失敗しようがないほど小さく（Fogg）。目標達成より長続きするのは「そういう人になる」こと（『複利で伸びる1つの習慣』）。だからプランナーは壮大な宣言ではなく、週ごとの小さな一歩を提案します。</p></div>
+    <div class="card"><h3>5 · 意味と人間関係こそ最終指標</h3><p>85年続くハーバード成人発達研究によれば、幸福と健康を最も強く予測するのは富や成功ではなく、人間関係の質。グリッドの終わりにあるのは数字ではなく——なりたい自分、経験したいこと、大切にしたい人です。</p></div>
+
+    <h2><span class="hx">▦</span>使い方：3つのレイヤー</h2>
+    <div class="steps">
+      <div class="card"><h3>修復 —— 現状を知り、週ごとに改善</h3><p>現状ベースライン（睡眠・体重・食事…）を記録 → 目標を設定 → 週ごとの漸進プランを自動生成 → 毎日チェックイン。各入力の横に権威ある参考値。</p></div>
+      <div class="card"><h3>アンカー —— 健康を見えるように</h3><p>設定で健康寿命と希望リタイア年齢を入力すると、グリッドに緑の「健康ゾーン」とリタイアのマークが現れます。緑の長さを決めるのは、あなたの習慣です。</p></div>
+      <div class="card"><h3>意味 —— バケットリスト</h3><p>一生のうちに経験したいこと（「ヨーロッパを旅する」）と希望の年齢を書くと、グリッド上の紫の星になります。体験には年齢の窓がある——早く経験するほど「思い出の配当」を長く受け取れる（『DIE WITH ZERO』）。</p></div>
+    </div>
+
+    <h2><span class="hx">⚑</span>私たちが作らないもの</h2>
+    <ul class="no">
+      <li><b>ランキングや他人との比較</b>——これはあなたと自分の人生との対話です；</li>
+      <li><b>ポイント商店式のゲーミフィケーション</b>——報酬は生活そのものの改善であるべき；</li>
+      <li><b>出典のないアドバイス</b>——出典を書けないことは、言いません。</li>
+    </ul>
+
+    <h2><span class="hx">🔒</span>データとプライバシー</h2>
+    <p class="muted">データは既定でお使いのブラウザにのみ保存。GitHubでログインした場合のみクラウド（開発者自身のCloudflareデータベース）に同期され、複数端末からのアクセスに使われます。いつでもJSONで完全バックアップを書き出せます。ログアウトしても端末のデータは消えません。<a href="https://github.com/luo896/life-in-weeks" target="_blank" rel="noreferrer">全コードはオープンソース</a>。</p>
+
+    <h2><span class="hx">💬</span>ご意見をお寄せください</h2>
+    <p class="muted">このツールは実際のフィードバックで進化します——ロードマップの多くは利用者の提案から生まれました。</p>
+    <div class="cta" style="justify-content:flex-start">
+      <a class="btn btn-p" href="https://github.com/luo896/life-in-weeks/issues/new" target="_blank" rel="noreferrer">フィードバック（GitHub）</a>
+      <a class="btn btn-g" href="mailto:xinanduoluo@gmail.com?subject=Life%20in%20Weeks%20feedback">メールを書く</a>
+    </div>
+
+    <h2><span class="hx">📚</span>参考文献</h2>
+    <ul class="refs">
+      <li>AASM &amp; SRS：<a href="https://jcsm.aasm.org/doi/10.5664/jcsm.4758" target="_blank" rel="noreferrer">成人の睡眠時間に関する合意声明（2015）</a></li>
+      <li>WHO：<a href="https://www.who.int/news-room/fact-sheets/detail/physical-activity" target="_blank" rel="noreferrer">身体活動</a> · <a href="https://www.who.int/news-room/fact-sheets/detail/healthy-diet" target="_blank" rel="noreferrer">健康的な食事</a> · <a href="https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight" target="_blank" rel="noreferrer">肥満と過体重</a> · <a href="https://www.who.int/data/gho" target="_blank" rel="noreferrer">健康寿命データ（GHO）</a></li>
+      <li>Fries：<a href="https://www.nejm.org/doi/full/10.1056/NEJM198007173030304" target="_blank" rel="noreferrer">Compression of Morbidity（NEJM 1980）</a></li>
+      <li>Lally ら：<a href="https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674" target="_blank" rel="noreferrer">How are habits formed（EJSP 2010）</a></li>
+      <li><a href="https://www.adultdevelopmentstudy.org/" target="_blank" rel="noreferrer">ハーバード成人発達研究</a> · <a href="https://www.halhershfield.com/" target="_blank" rel="noreferrer">Hershfield：未来自己の連続性</a> · <a href="https://selfdeterminationtheory.org/" target="_blank" rel="noreferrer">自己決定理論</a></li>
+      <li>書籍：<a href="https://www.oliverburkeman.com/" target="_blank" rel="noreferrer">『限りある時間の使い方』</a> · <a href="https://www.diewithzerobook.com/" target="_blank" rel="noreferrer">『DIE WITH ZERO』</a> · <a href="https://jamesclear.com/atomic-habits" target="_blank" rel="noreferrer">『複利で伸びる1つの習慣』</a> · <a href="https://tinyhabits.com/" target="_blank" rel="noreferrer">Tiny Habits</a></li>
+    </ul>
+
+    <footer>ライフカレンダー · Life in Weeks — <a href="https://github.com/luo896/life-in-weeks" target="_blank" rel="noreferrer">リポジトリ</a> · <a href="https://github.com/luo896/life-in-weeks/blob/main/CHANGELOG.md" target="_blank" rel="noreferrer">更新履歴</a> · MIT</footer>
+  </div>
+</div>
+
+<script>
+  // 迷你人生网格：过去/本周/健康区/未来/星标/退休线，纯装饰
+  (function () {
+    var mg = document.getElementById('mg')
+    var cols = 52, rows = 8, lived = 170, health = 300, retire = 260, stars = [233, 350]
+    var frag = document.createDocumentFragment()
+    for (var i = 0; i < cols * rows; i++) {
+      var el = document.createElement('i')
+      if (i < lived) el.className = 'p'
+      else if (i === lived) el.className = 'n'
+      else if (stars.indexOf(i) !== -1) el.className = 's'
+      else if (i === retire) el.className = 'r'
+      else if (i < health) el.className = 'h'
+      frag.appendChild(el)
+    }
+    mg.appendChild(frag)
+  })()
+
+  // 语言切换：?lang= → localStorage → 系统语言
+  ;(function () {
+    var KEY = 'life-weeks-habit:about-lang'
+    function pick() {
+      var q = new URLSearchParams(location.search).get('lang')
+      if (q) return q
+      try { var s = localStorage.getItem(KEY); if (s) return s } catch (e) {}
+      var n = (navigator.language || 'zh').toLowerCase()
+      return n.indexOf('zh') === 0 ? 'zh' : n.indexOf('ja') === 0 ? 'ja' : 'en'
+    }
+    function apply(l) {
+      if (['zh', 'en', 'ja'].indexOf(l) === -1) l = 'zh'
+      document.querySelectorAll('.l10n').forEach(function (d) {
+        d.classList.toggle('show', d.getAttribute('data-lang') === l)
+      })
+      document.querySelectorAll('.langbar button').forEach(function (b) {
+        b.classList.toggle('on', b.getAttribute('data-l') === l)
+      })
+      document.documentElement.lang = l === 'zh' ? 'zh-CN' : l
+      try { localStorage.setItem(KEY, l) } catch (e) {}
+    }
+    document.querySelectorAll('.langbar button').forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.getAttribute('data-l')) })
+    })
+    apply(pick())
+  })()
+</script>
+</body>
+</html>

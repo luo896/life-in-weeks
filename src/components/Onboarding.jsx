@@ -73,6 +73,14 @@ export default function Onboarding() {
             {t('auth.onboardLogin')}
           </button>
         )}
+        <a
+          className="onboard-about"
+          href={`${import.meta.env.BASE_URL}about.html`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {t('ob.about')}
+        </a>
       </div>
     </div>
   )

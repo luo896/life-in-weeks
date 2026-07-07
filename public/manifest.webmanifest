@@ -1,0 +1,17 @@
+{
+  "name": "人生周历 · 习惯改造计划",
+  "short_name": "人生周历",
+  "description": "把人生画成 4000 个格子：记录现状、逐周改善习惯、写下人生清单。",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f141a",
+  "theme_color": "#0f141a",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
