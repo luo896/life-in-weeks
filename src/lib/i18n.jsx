@@ -67,6 +67,8 @@ const zh = {
   'ev.hale.src': 'WHO 数据',
   'ev.experience': '体验有年龄窗口，越早经历，"记忆的股息"领得越久——想想它属于哪个年龄段。',
   'ev.experience.src': '《Die with Zero》',
+  'ev.lifespan': '默认 73，取自世卫组织全球平均预期寿命（2019）。你也可以改成让你最有触动的数字——比如更看重当下就填小一点。',
+  'ev.lifespan.src': 'WHO 数据',
 
   // body metrics (v1.6)
   'b.height': '身高（cm，可选）',
@@ -102,7 +104,7 @@ const zh = {
   'ob.namePh': '怎么称呼你',
   'ob.birth': '出生日期',
   'ob.life': '预期寿命（岁）',
-  'ob.lifeHint': '经典的人生周历用 90；你也可以用让你最受触动的数字，比如 70。',
+  'ob.lifeHint': '这个数字决定整张人生网格的长度。',
   'ob.preview': (v) => (
     <>
       你已经度过了约 <b>{v.lived}</b> 周，还剩 <b>{v.remaining}</b> 周。
@@ -418,6 +420,8 @@ const en = {
   'ev.hale.src': 'WHO data',
   'ev.experience': 'Experiences have age windows — the earlier you live them, the longer the memory dividend pays.',
   'ev.experience.src': 'Die with Zero',
+  'ev.lifespan': 'The default of 73 is the WHO global average life expectancy (2019). Feel free to change it to whatever number moves you most — pick a smaller one if you want to feel the present more sharply.',
+  'ev.lifespan.src': 'WHO data',
 
   'b.height': 'Height (cm, optional)',
   'b.waist': 'Waist (cm, optional)',
@@ -450,7 +454,7 @@ const en = {
   'ob.namePh': 'What should we call you',
   'ob.birth': 'Birth date',
   'ob.life': 'Life expectancy (years)',
-  'ob.lifeHint': 'The classic life calendar uses 90 — or pick whatever number moves you most, like 70.',
+  'ob.lifeHint': 'This number sets the length of your whole life grid.',
   'ob.preview': (v) => (
     <>
       You have lived about <b>{v.lived}</b> weeks. <b>{v.remaining}</b> remain.
@@ -751,6 +755,8 @@ const ja = {
   'ev.hale.src': 'WHO データ',
   'ev.experience': '体験には年齢の窓がある。早く経験するほど「思い出の配当」を長く受け取れる。',
   'ev.experience.src': '『DIE WITH ZERO』',
+  'ev.lifespan': '既定値73は、WHOの世界平均寿命（2019）です。いちばん心に響く数字に変えてOK——今を強く意識したいなら小さめでも。',
+  'ev.lifespan.src': 'WHO データ',
 
   'b.height': '身長（cm・任意）',
   'b.waist': 'ウエスト（cm・任意）',
@@ -783,7 +789,7 @@ const ja = {
   'ob.namePh': 'ニックネームなど',
   'ob.birth': '生年月日',
   'ob.life': '想定寿命（歳）',
-  'ob.lifeHint': '定番のライフカレンダーは90歳。いちばん心に刺さる数字（例えば70）でもOK。',
+  'ob.lifeHint': 'この数字が人生グリッド全体の長さを決めます。',
   'ob.preview': (v) => (
     <>
       これまでに約 <b>{v.lived}</b> 週間を生き、残りは <b>{v.remaining}</b> 週間。

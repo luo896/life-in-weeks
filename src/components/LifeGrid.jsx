@@ -48,7 +48,7 @@ export function LifeGridView() {
   const { state, upsertJournal, removeJournal, setProfile } = useStore()
   const { t, lang } = useI18n()
   const { profile, plan, goals, journals } = state
-  const years = profile.lifeExpectancyYears || 90
+  const years = profile.lifeExpectancyYears || 73
   // explicit user choice wins; otherwise pick by screen shape (wide → landscape),
   // tracked in state so window resizes re-evaluate the auto choice
   const [narrow, setNarrow] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 860)

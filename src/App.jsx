@@ -170,7 +170,7 @@ function Settings({ onClose }) {
   const [form, setForm] = useState({
     name: p.name || '',
     birthdate: p.birthdate || '',
-    lifeExpectancyYears: p.lifeExpectancyYears || 90,
+    lifeExpectancyYears: p.lifeExpectancyYears || 73,
     healthspanYears: p.healthspanYears ?? '',
     retirementAge: p.retirementAge ?? '',
     weightUnit: p.weightUnit || 'kg',
@@ -180,7 +180,7 @@ function Settings({ onClose }) {
   const save = () => {
     setProfile({
       ...form,
-      lifeExpectancyYears: Number(form.lifeExpectancyYears) || 90,
+      lifeExpectancyYears: Number(form.lifeExpectancyYears) || 73,
       healthspanYears: form.healthspanYears === '' ? '' : Number(form.healthspanYears) || '',
       retirementAge: form.retirementAge === '' ? '' : Number(form.retirementAge) || '',
     })
@@ -212,6 +212,7 @@ function Settings({ onClose }) {
             onChange={(e) => set({ lifeExpectancyYears: e.target.value })}
           />
         </Field>
+        <EvidenceHint k="lifespan" />
         <Field label={t('settings.healthspan')}>
           <input
             type="number"

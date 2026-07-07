@@ -26,7 +26,7 @@ export function weeksBetween(a, b) {
 
 // Core life statistics from a birthdate + life expectancy in years.
 export function lifeStats(birthdate, years) {
-  const totalWeeks = Math.round((years || 90) * 52)
+  const totalWeeks = Math.round((years || 73) * 52)
   const birth = parseDate(birthdate)
   if (!birth) {
     return { ok: false, totalWeeks, lived: 0, remaining: totalWeeks, pct: 0, currentWeekIndex: 0, ageYears: 0, birthYear: null }

@@ -9,7 +9,7 @@ export const DEFAULT_STATE = {
   profile: {
     name: '',
     birthdate: '',
-    lifeExpectancyYears: 90,
+    lifeExpectancyYears: 73,
     healthspanYears: '',
     retirementAge: '',
     weightUnit: 'kg',

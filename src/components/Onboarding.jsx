@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useStore } from '../store.jsx'
 import { useI18n } from '../lib/i18n.jsx'
 import { useSync } from '../lib/sync.jsx'
-import { Button, Field } from './ui.jsx'
+import { Button, Field, EvidenceHint } from './ui.jsx'
 import { lifeStats } from '../lib/date.js'
 
 export default function Onboarding() {
@@ -11,13 +11,13 @@ export default function Onboarding() {
   const { login, loggedIn, status } = useSync()
   const [name, setName] = useState('')
   const [birthdate, setBirthdate] = useState('')
-  const [years, setYears] = useState(90)
+  const [years, setYears] = useState(73)
 
   const preview = birthdate ? lifeStats(birthdate, years) : null
 
   const start = () => {
     if (!birthdate) return
-    setProfile({ name: name.trim(), birthdate, lifeExpectancyYears: Number(years) || 90 })
+    setProfile({ name: name.trim(), birthdate, lifeExpectancyYears: Number(years) || 73 })
   }
 
   return (
@@ -55,6 +55,7 @@ export default function Onboarding() {
         <Field label={t('ob.life')} hint={t('ob.lifeHint')}>
           <input type="number" min="40" max="120" value={years} onChange={(e) => setYears(e.target.value)} />
         </Field>
+        <EvidenceHint k="lifespan" />
 
         {preview?.ok && (
           <div className="onboard-preview">

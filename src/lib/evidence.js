@@ -7,6 +7,7 @@ export const EVIDENCE_URLS = {
   diet: 'https://www.who.int/news-room/fact-sheets/detail/healthy-diet', // WHO 健康饮食
   screen: 'https://www.who.int/publications/i/item/9789240015128', // WHO 身体活动与久坐行为指南
   habit: 'https://onlinelibrary.wiley.com/doi/10.1002/ejsp.674', // Lally 2010：习惯形成平均 66 天
+  lifespan: 'https://www.who.int/data/gho', // WHO 全球健康观察站（出生时预期寿命数据）
   hale: 'https://www.who.int/data/gho', // WHO 全球健康观察站（健康预期寿命 HALE 数据）
   experience: 'https://www.diewithzerobook.com/', // Perkins《Die with Zero》：体验的年龄窗口与记忆股息
 }

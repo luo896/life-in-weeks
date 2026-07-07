@@ -61,7 +61,7 @@ export function exportShareCard(state) {
   const t = tFor(state)
   const { profile, logs } = state
   const stats = lifeStats(profile.birthdate, profile.lifeExpectancyYears)
-  const years = profile.lifeExpectancyYears || 90
+  const years = profile.lifeExpectancyYears || 73
   const cols = 52
   const W = 1080
   const H = 1350
@@ -223,7 +223,7 @@ function buildReportHTML(state, t) {
   <div class="muted">${esc(profile.name || t('r.anon'))} · ${esc(t('r.exportedAt', { d: stamp() }))}</div>
   <div class="hero">
     <div>${t('r.heroLived', { n: stats.lived.toLocaleString(), m: stats.remaining.toLocaleString() })}</div>
-    <div style="margin-top:6px;opacity:.8">${esc(t('r.heroPct', { p: stats.pct.toFixed(1), y: profile.lifeExpectancyYears || 90, a: stats.ageYears }))}</div>
+    <div style="margin-top:6px;opacity:.8">${esc(t('r.heroPct', { p: stats.pct.toFixed(1), y: profile.lifeExpectancyYears || 73, a: stats.ageYears }))}</div>
   </div>
 
   <h2>${esc(t('r.s1'))}</h2>
